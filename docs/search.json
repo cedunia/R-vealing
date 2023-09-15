@@ -19,14 +19,14 @@
       ],
       "date": "2023-09-15",
       "contents": "\nImporting CSV Files\nSyntax:\n\n\nread.csv(\"file_path\", header = TRUE, sep = \",\")\n\n\nfile_path: Path to the CSV file you wish to import.\nheader: Whether the first row contains column names. Default is TRUE.\nsep: The field separator character. Default is a comma.\nExample: To import a CSV file\n\n\nmy_data <- read.csv(\"./static/sample_data.csv\", header = TRUE, sep = \",\")\n\n\nImporting Excel Files\nSyntax:\n\n\nlibrary(readxl)\nread_excel(\"file_path\", sheet = 1)\n\n\nfile_path: Path to the Excel file you wish to import.\nsheet: The sheet number or name to read.\nExample: To import an Excel file:\n\n\nlibrary(readxl)\nmy_excel_data <- read_excel(\"./static/sample_data.xlsx\", sheet = 1)\n\n\nImporting SQL Databases\nSyntax:\n\n\nlibrary(DBI)\ncon <- dbConnect(RSQLite::SQLite(), \"db_path\")\ndbReadTable(con, \"table_name\")\n\n\ndb_path: Path to the SQL database you wish to connect to.\ntable_name: The name of the table you wish to read..\nExample: To connect to a SQL database and read a table:\n\n\nlibrary(DBI)\ncon <- dbConnect(RSQLite::SQLite(), \"./static/sample_data.db\")\nmy_db_data <- dbReadTable(con, \"sample_table\")\n\n\nConclusion\nBy mastering these methods, you can easily import various types of data into R, setting the stage for your data analysis journey.\n\n\n\n",
-      "last_modified": "2023-09-15T14:57:46+02:00"
+      "last_modified": "2023-09-15T16:25:21+02:00"
     },
     {
       "path": "index.html",
       "title": "R-vealing Data",
       "author": [],
       "contents": "\n\n\n\n",
-      "last_modified": "2023-09-15T15:06:19+02:00"
+      "last_modified": "2023-09-15T16:23:37+02:00"
     }
   ],
   "collections": ["posts/posts.json"]
