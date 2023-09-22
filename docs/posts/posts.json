@@ -1,5 +1,24 @@
 [
   {
+    "path": "posts/2023-09-22-describing-data-in-r/",
+    "title": "Describing Data in R",
+    "description": "Once you have imported your data into R, the next step is often to explore and describe your data. Descriptive statistics and visualizations can help you understand the distribution, central tendency, and spread of your data. Here's how to get started:",
+    "author": [
+      {
+        "name": "Cédric Hassen-Khodja",
+        "url": {}
+      }
+    ],
+    "date": "2023-09-22",
+    "categories": [
+      "descriptive"
+    ],
+    "contents": "\nSummary Statistics\nSyntax:\n\n\nsummary(data)\n\n\ndata: The data frame you wish to summarize.\nExample: To summarize the sample data:\n\n\nmy_data <- read.csv(\"./static/sample_data.csv\", header = TRUE, sep = \",\")\nsummary(my_data)\n\n\nStructure of the Data\nSyntax:\n\n\nstr(data)\n\n\ndata: The data frame whose structure you wish to view.\nExample: To view the structure of the sample data:\n\n\nmy_data <- read.csv(\"./static/sample_data.csv\", header = TRUE, sep = \",\")\nstr(my_data)\n\n\nData visualization\nVisualizing your data can provide insights that are not apparent through descriptive statistics alone.\nHistogram\nSyntax:\n\n\nhist(data$variable)\n\n\ndata$variable: The variable you wish to plot a histogram for.\nExample: To plot a histogram of the Age variable in the sample data:\n\n\nmy_data <- read.csv(\"./static/sample_data.csv\", header = TRUE, sep = \",\")\nhist(my_data$Age)\n\n\nBoxplot\nSyntax:\n\n\nboxplot(data$variable)\n\n\ndata$variable: The variable you wish to plot a boxplot for.\nExample: To plot a boxplot of the Age variable in the sample data:\n\n\nmy_data <- read.csv(\"./static/sample_data.csv\", header = TRUE, sep = \",\")\nboxplot(my_data$Age)\n\n\nConclusion\nBy utilizing these functions and visualizations, you can gain a deeper understanding of your data, which is crucial for any subsequent analysis or modeling.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2023-09-22T15:04:06+02:00",
+    "input_file": "describing-data-in-r.knit.md"
+  },
+  {
     "path": "posts/2023-09-15-importing-data-into-r/",
     "title": "Importing Data into R",
     "description": "One of the first steps in any data analysis project is importing your data into R. Whether you're dealing with CSV files, Excel spreadsheets, or SQL databases, R has got you covered. Here's how to get started:",

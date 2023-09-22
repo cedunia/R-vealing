@@ -1,0 +1,93 @@
+---
+title: "Describing Data in R"
+description: |
+  Once you have imported your data into R, the next step is often to explore and describe your data. Descriptive statistics and visualizations can help you understand the distribution, central tendency, and spread of your data. Here's how to get started:
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2023-09-22
+categories: [descriptive]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Summary Statistics
+
+**Syntax**:
+
+```{r echo=TRUE, eval=FALSE}
+summary(data)
+```
+
+-   `data`: The data frame you wish to summarize.
+
+### Example: To summarize the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+my_data <- read.csv("./static/sample_data.csv", header = TRUE, sep = ",")
+summary(my_data)
+```
+
+## Structure of the Data
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+str(data)
+```
+
+-   `data`: The data frame whose structure you wish to view.
+
+### Example: To view the structure of the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+my_data <- read.csv("./static/sample_data.csv", header = TRUE, sep = ",")
+str(my_data)
+```
+
+## Data visualization
+
+Visualizing your data can provide insights that are not apparent through descriptive statistics alone.
+
+### Histogram
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+hist(data$variable)
+```
+
+-   `data$variable`: The variable you wish to plot a histogram for.
+
+#### Example: To plot a histogram of the Age variable in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+my_data <- read.csv("./static/sample_data.csv", header = TRUE, sep = ",")
+hist(my_data$Age)
+```
+
+### Boxplot
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+boxplot(data$variable)
+```
+
+-   `data$variable`: The variable you wish to plot a boxplot for.
+
+#### Example: To plot a boxplot of the Age variable in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+my_data <- read.csv("./static/sample_data.csv", header = TRUE, sep = ",")
+boxplot(my_data$Age)
+```
+
+# Conclusion
+
+By utilizing these functions and visualizations, you can gain a deeper understanding of your data, which is crucial for any subsequent analysis or modeling.
