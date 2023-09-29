@@ -1,5 +1,26 @@
 [
   {
+    "path": "posts/2023-09-29-transforming-and-manipulating-data-in-r/",
+    "title": "Transforming and Manipulating Data in R",
+    "description": "After importing and describing your data, the next step in your data analysis journey is often to transform and manipulate your data to prepare it for analysis. In this post, we will explore how to handle missing values, clean data, and transform variables.",
+    "author": [
+      {
+        "name": "Cédric Hassen-Khodja",
+        "url": {}
+      }
+    ],
+    "date": "2023-09-29",
+    "categories": [
+      "transformation",
+      "manipulation",
+      "cleaning"
+    ],
+    "contents": "\nGenerating Sample Data\nLet’s start by generating some sample data with missing values, duplicates, and variables to transform:\n\n\n# Setting the seed for reproducibility\nset.seed(123)\n\n# Creating a sample data frame\nsample_data <- data.frame(\n  ID = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 3),\n  Age = c(21, 25, 30, 35, 40, 45, 50, 55, 60, 65, 30),\n  Income = c(30000, 35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000, 75000, 40000),\n  Gender = c(\"M\", \"F\", \"M\", \"F\", \"M\", \"F\", \"M\", \"F\", \"M\", \"F\", \"M\")\n)\n\n# Introducing some missing values\nsample_data$Age[c(3, 6, 9)] <- NA\nsample_data$Income[c(2, 5, 10)] <- NA\n\n# Viewing the sample data\nsample_data\n\n\nHandling Missing Values\nFunction: is.na()\nSyntax:\n\n\nis.na(data)\n\n\ndata: The data object to be checked for missing values.\nExample: To identify missing values in the sample data:\n\n\nis.na(sample_data)\n\n\nFunction: na.omit()\nSyntax:\n\n\nna.omit(data)\n\n\ndata: The data object from which rows with missing values should be removed.\nExample: To remove rows with missing values from the sample data:\n\n\nna.omit(sample_data)\n\n\nFunction: complete.cases()\nSyntax:\n\n\ncomplete.cases(data)\n\n\ndata: The data object to be checked for complete cases.\nExample: To identify rows with no missing values in the sample data:\n\n\ncomplete.cases(sample_data)\n\n\nData cleaning\nFunction: distinct()\nSyntax:\n\n\ndistinct(data)\n\n\ndata: The data object from which duplicate rows should be removed.\nExample: To remove duplicate rows in the sample data:\n\n\ndplyr::distinct(sample_data)\n\n\nFunction: filter()\nSyntax:\n\n\nfilter(data, condition)\n\n\ndata: The data object to be filtered.\ncondition: The condition to be met for a row to be included in the output.\nExample: To filter rows in the sample data:\n\n\ndplyr::filter(sample_data, Age > 30)\n\n\nFunction: mutate()\nSyntax:\n\n\nmutate(data, new_variable = expression)\n\n\ndata: The data object to be transformed.\nnew_variable: The name of the new or modified variable.\nexpression: The expression defining the new or modified variable.\nExample: To create new variable in the sample data:\n\n\ndplyr::mutate(sample_data, Income_Thousand = Income / 1000)\n\n\nTransforming Variables\nFunction: transmute()\nSyntax:\n\n\ntransmute(data, new_variable = expression)\n\n\ndata: The data object to be transformed.\nnew_variable: The name of the new variable.\nexpression: The expression defining the new variable.\nExample: To create new variable in the sample data:\n\n\ndplyr::transmute(sample_data, Income_Thousand = Income / 1000)\n\n\nFunction: summarise\nSyntax:\n\n\nsummarise(data, summary_statistic = expression)\n\n\ndata: The data object to be summarized.\nsummary_statistic: The name of the summary statistic.\nexpression: The expression defining the summary statistic.\nExample: To create new variable in the sample data:\n\n\ndplyr::summarise(sample_data, Avg_Income = mean(Income, na.rm = TRUE))\n\n\nConclusion\nBy mastering these data transformation and manipulation techniques, you can effectively prepare your data for subsequent analysis and modeling.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2023-09-29T12:55:04+02:00",
+    "input_file": "transforming-and-manipulating-data-in-r.knit.md"
+  },
+  {
     "path": "posts/2023-09-22-describing-data-in-r/",
     "title": "Describing Data in R",
     "description": "Once you have imported your data into R, the next step is often to explore and describe your data. Descriptive statistics and visualizations can help you understand the distribution, central tendency, and spread of your data. Here's how to get started:",
