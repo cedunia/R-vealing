@@ -1,0 +1,189 @@
+---
+title: "Transforming and Manipulating Data in R"
+description: |
+  After importing and describing your data, the next step in your data analysis journey is often to transform and manipulate your data to prepare it for analysis. In this post, we will explore how to handle missing values, clean data, and transform variables.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2023-09-29
+categories: 
+  - [transformation]
+  - [manipulation]
+  - [cleaning]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Generating Sample Data
+
+Let's start by generating some sample data with missing values, duplicates, and variables to transform:
+
+```{r echo=TRUE, eval=FALSE}
+# Setting the seed for reproducibility
+set.seed(123)
+
+# Creating a sample data frame
+sample_data <- data.frame(
+  ID = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 3),
+  Age = c(21, 25, 30, 35, 40, 45, 50, 55, 60, 65, 30),
+  Income = c(30000, 35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000, 75000, 40000),
+  Gender = c("M", "F", "M", "F", "M", "F", "M", "F", "M", "F", "M")
+)
+
+# Introducing some missing values
+sample_data$Age[c(3, 6, 9)] <- NA
+sample_data$Income[c(2, 5, 10)] <- NA
+
+# Viewing the sample data
+sample_data
+```
+
+## Handling Missing Values
+
+### Function: `is.na()`
+
+**Syntax**:
+
+```{r echo=TRUE, eval=FALSE}
+is.na(data)
+```
+
+-   `data`: The data object to be checked for missing values.
+
+#### Example: To identify missing values in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+is.na(sample_data)
+```
+
+### Function: `na.omit()`
+
+**Syntax**:
+
+```{r echo=TRUE, eval=FALSE}
+na.omit(data)
+```
+
+-   `data`: The data object from which rows with missing values should be removed.
+
+#### Example: To remove rows with missing values from the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+na.omit(sample_data)
+```
+
+### Function: `complete.cases()`
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+complete.cases(data)
+```
+
+-   `data`: The data object to be checked for complete cases.
+
+#### Example: To identify rows with no missing values in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+complete.cases(sample_data)
+```
+
+## Data cleaning
+
+### Function: `distinct()`
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+distinct(data)
+```
+
+-   `data`: The data object from which duplicate rows should be removed.
+
+#### Example: To remove duplicate rows in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+dplyr::distinct(sample_data)
+```
+
+### Function: `filter()`
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+filter(data, condition)
+```
+
+-   `data`: The data object to be filtered.
+-   `condition`: The condition to be met for a row to be included in the output.
+
+#### Example: To filter rows in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+dplyr::filter(sample_data, Age > 30)
+```
+
+### Function: `mutate()`
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+mutate(data, new_variable = expression)
+```
+
+-   `data`: The data object to be transformed.
+-   `new_variable`: The name of the new or modified variable.
+-   `expression`: The expression defining the new or modified variable.
+
+#### Example: To create new variable in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+dplyr::mutate(sample_data, Income_Thousand = Income / 1000)
+```
+
+## Transforming Variables
+
+### Function: `transmute()`
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+transmute(data, new_variable = expression)
+```
+
+-   `data`: The data object to be transformed.
+-   `new_variable`: The name of the new variable.
+-   `expression`: The expression defining the new variable.
+
+#### Example: To create new variable in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+dplyr::transmute(sample_data, Income_Thousand = Income / 1000)
+```
+
+### Function: `summarise`
+
+**Syntax**:
+
+```{r echo=TRUE,eval=FALSE}
+summarise(data, summary_statistic = expression)
+```
+
+-   `data`: The data object to be summarized.
+-   `summary_statistic`: The name of the summary statistic.
+-   `expression`: The expression defining the summary statistic.
+
+#### Example: To create new variable in the sample data:
+
+```{r echo=TRUE,eval=FALSE}
+dplyr::summarise(sample_data, Avg_Income = mean(Income, na.rm = TRUE))
+```
+
+# Conclusion
+
+By mastering these data transformation and manipulation techniques, you can effectively prepare your data for subsequent analysis and modeling.
