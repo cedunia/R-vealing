@@ -88,26 +88,33 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 
   <!--radix_placeholder_meta_tags-->
-  <title>R-vealing Data</title>
+  <title>R-vealing Data: Linear Regression Analysis with R: Predicting Sales</title>
+
+  <meta property="description" itemprop="description" content="Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors."/>
 
 
-
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2023-10-27"/>
+  <meta property="article:created" itemprop="dateCreated" content="2023-10-27"/>
+  <meta name="article:author" content="Cédric Hassen-Khodja"/>
 
   <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
-  <meta property="og:title" content="R-vealing Data"/>
+  <meta property="og:title" content="R-vealing Data: Linear Regression Analysis with R: Predicting Sales"/>
   <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors."/>
   <meta property="og:locale" content="en_US"/>
   <meta property="og:site_name" content="R-vealing Data"/>
 
   <!--  https://dev.twitter.com/cards/types/summary -->
   <meta property="twitter:card" content="summary"/>
-  <meta property="twitter:title" content="R-vealing Data"/>
+  <meta property="twitter:title" content="R-vealing Data: Linear Regression Analysis with R: Predicting Sales"/>
+  <meta property="twitter:description" content="Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors."/>
 
   <!--/radix_placeholder_meta_tags-->
   <!--radix_placeholder_rmarkdown_metadata-->
 
   <script type="text/json" id="radix-rmarkdown-metadata">
-  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","site","listing"]}},"value":[{"type":"character","attributes":{},"value":["R-vealing Data"]},{"type":"character","attributes":{},"value":["distill::distill_website"]},{"type":"character","attributes":{},"value":["posts"]}]}
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","theme","author","date","categories","output"]}},"value":[{"type":"character","attributes":{},"value":["Linear Regression Analysis with R: Predicting Sales"]},{"type":"character","attributes":{},"value":["Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors.\n"]},{"type":"character","attributes":{},"value":["theme.css"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Cédric Hassen-Khodja"]}]}]},{"type":"character","attributes":{},"value":["2023-10-27"]},{"type":"character","attributes":{},"value":["Linear regression","ggplot2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
   </script>
   <!--/radix_placeholder_rmarkdown_metadata-->
   <!--radix_placeholder_navigation_in_header-->
@@ -455,8 +462,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
 
   <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-  <link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet"/>
-  <link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet"/>
+  <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet"/>
+  <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet"/>
   <script src="site_libs/headroom-0.9.4/headroom.min.js"></script>
   <script src="site_libs/autocomplete-0.37.1/autocomplete.min.js"></script>
   <script src="site_libs/fuse-6.4.1/fuse.min.js"></script>
@@ -2417,7 +2424,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     color: var(--hover-color, white);
   }</style>
   <!--/radix_placeholder_distill-->
-  <script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+  <script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
   <script src="site_libs/popper-2.6.0/popper.min.js"></script>
   <link href="site_libs/tippy-6.2.7/tippy.css" rel="stylesheet" />
   <link href="site_libs/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
@@ -2432,12 +2439,12 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 </head>
 
-<body class="layout-listing">
+<body>
 
 <!--radix_placeholder_front_matter-->
 
 <script id="distill-front-matter" type="text/json">
-{"title":"R-vealing Data","authors":[]}
+{"title":"Linear Regression Analysis with R: Predicting Sales","description":"Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors.","authors":[{"author":"Cédric Hassen-Khodja","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2023-10-27T00:00:00.000+02:00","citationText":"Hassen-Khodja, 2023"}
 </script>
 
 <!--/radix_placeholder_front_matter-->
@@ -2458,341 +2465,225 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_navigation_before_body-->
 <!--radix_placeholder_site_before_body-->
 <!--/radix_placeholder_site_before_body-->
-<!--radix_placeholder_article_listing-->
 
-
-<script type="application/javascript">
-
-function init_posts_list() {
-
-  function load_image(img) {
-    var src = $(img).attr('data-src');
-    if (src) {
-      $(img).attr('src', src);
-      $(img).on("load", function() {
-        img.removeAttribute('data-src');
-      });
-    }
-  }
-
-  function set_posts_visible(posts, visible) {
-    if (visible) {
-
-      // show bottom border by default
-      $(posts).removeClass('post-preview-last');
-
-      // apply limits if need be
-      var max_posts = 25;
-      var apply_limits = $('.posts-container').hasClass('posts-apply-limit');
-      if (apply_limits && posts.length > max_posts) {
-        posts = $(posts).slice(0, max_posts);
-      } else {
-        $('.posts-more a').addClass('hidden');
-      }
-
-      // apply last style
-      $(posts.slice(-1)[0]).addClass('post-preview-last');
-
-      $(posts).removeClass('hidden');
-      $(posts).find('img[data-src]').each(function(i, img) {
-        load_image(img);
-      });
-    } else {
-      $(posts).addClass('hidden');
-    }
-  }
-
-  function apply_hash_filter() {
-
-    // clear active state
-    $('.categories .active').removeClass('active');
-
-    // mark all posts invisible to start
-    set_posts_visible($('.posts-list').children('a'), false);
-
-    // if we have a hash filter
-    if (window.location.hash && window.location.hash.startsWith("#category:")) {
-
-      // mark posts that match the category visible
-      var page_category = window.location.hash.replace(/^#category:/, "");
-      page_category = decodeURIComponent(page_category)
-      var posts = $('.post-metadata').map(function(idx, script) {
-        var metadata = $.parseJSON($(script).html());
-        var post = null;
-        $.each(metadata.categories, function(idx, category) {
-          category = category.replace(/ /g,"_");
-          if ((page_category || '').toLowerCase() === "articles" || category === page_category) {
-            post = $(script).parent().get();
-            return false;
-          }
-        });
-        return post;
-      });
-      set_posts_visible(posts, true);
-
-      // mark the hash active
-      $('.categories li>a[href="' + decodeURIComponent(window.location.hash) + '"]').addClass('active');
-
-      // update the list_caption
-      var list_caption = $('.posts-list-caption');
-      var caption = (page_category || '').toLowerCase() === "articles"
-        ? list_caption.attr('data-caption')
-        : ('Category: ' + page_category.replace(/_/g," "));
-      list_caption.text(caption);
-
-    } else {
-
-      // no hash filter, make all posts visible (subject to max display)
-      set_posts_visible($('.posts-list').children(), true);
-
-      // reset list caption
-      var list_caption = $('.posts-list-caption');
-      list_caption.text(list_caption.attr('data-caption'));
-
-
-    }
-  }
-
-  // more articles
-  function apply_post_limits(apply) {
-    if (apply) {
-      $('.posts-container').addClass('posts-apply-limit');
-      $('.posts-more a').removeClass('hidden');
-    } else {
-      $('.posts-container').removeClass('posts-apply-limit');
-      $('.posts-more a').addClass('hidden');
-    }
-  }
-
-  // click handling for tags
-  $('.dt-tag').click(function(ev) {
-    window.location.hash = '#category:' + $(this).text().replace(/ /g, "_");
-    return false;
-  })
-
-  // hash filter handling
-  apply_hash_filter();
-  $(window).on('hashchange',function() {
-    apply_post_limits(true);
-    apply_hash_filter();
-  });
-
-  // more articles link
-  $('.posts-more a').click(function(e) {
-    e.preventDefault();
-    apply_post_limits(false);
-    apply_hash_filter();
-    return false;
-  });
-
-}
-
-</script>
-
-
-
-<div class="posts-container posts-with-sidebar posts-apply-limit l-screen-inset">
-<div class="posts-list">
-<h1 class="posts-list-caption" data-caption="R-vealing Data">R-vealing Data</h1>
-<a href="posts/2023-10-27-linear-regression-analysis-with-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["Linear regression","ggplot2"]}</script>
-<div class="metadata">
-<div class="publishedDate">Oct. 26, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2023-10-27-linear-regression-analysis-with-r/linear-regression-analysis-with-r_files/figure-html5/unnamed-chunk-4-1.png"/>
-</div>
-<div class="description">
-<h2>Linear Regression Analysis with R: Predicting Sales</h2>
+<div class="d-title">
+<h1>Linear Regression Analysis with R: Predicting Sales</h1>
+<!--radix_placeholder_categories-->
 <div class="dt-tags">
 <div class="dt-tag">Linear regression</div>
 <div class="dt-tag">ggplot2</div>
 </div>
-<p>Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors.</p>
-</div>
-</a>
-<a href="posts/2023-10-20-data-visualization-with-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["visualization","ggplot2"]}</script>
-<div class="metadata">
-<div class="publishedDate">Oct. 13, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img src="posts/2023-10-20-data-visualization-with-r/data-visualization-with-r_files/figure-html5/unnamed-chunk-5-1.png"/>
-</div>
-<div class="description">
-<h2>Data Visualization with R</h2>
-<div class="dt-tags">
-<div class="dt-tag">visualization</div>
-<div class="dt-tag">ggplot2</div>
-</div>
-<p>Data visualization is a powerful tool in the data analyst's toolkit. It allows us to quickly understand trends, patterns, and potential anomalies in our data. A well-crafted chart can reveal hidden insights and tell a story that numbers alone cannot.</p>
-</div>
-</a>
-<a href="posts/2023-09-29-transforming-and-manipulating-data-in-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["transformation","manipulation","cleaning"]}</script>
-<div class="metadata">
-<div class="publishedDate">Sept. 29, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Transforming and Manipulating Data in R</h2>
-<div class="dt-tags">
-<div class="dt-tag">transformation</div>
-<div class="dt-tag">manipulation</div>
-<div class="dt-tag">cleaning</div>
-</div>
-<p>After importing and describing your data, the next step in your data analysis journey is often to transform and manipulate your data to prepare it for analysis. In this post, we will explore how to handle missing values, clean data, and transform variables.</p>
-</div>
-</a>
-<a href="posts/2023-09-22-describing-data-in-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["descriptive"]}</script>
-<div class="metadata">
-<div class="publishedDate">Sept. 22, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Describing Data in R</h2>
-<div class="dt-tags">
-<div class="dt-tag">descriptive</div>
-</div>
-<p>Once you have imported your data into R, the next step is often to explore and describe your data. Descriptive statistics and visualizations can help you understand the distribution, central tendency, and spread of your data. Here's how to get started:</p>
-</div>
-</a>
-<a href="posts/2023-09-15-importing-data-into-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["import"]}</script>
-<div class="metadata">
-<div class="publishedDate">Sept. 15, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Importing Data into R</h2>
-<div class="dt-tags">
-<div class="dt-tag">import</div>
-</div>
-<p>One of the first steps in any data analysis project is importing your data into R. Whether you're dealing with CSV files, Excel spreadsheets, or SQL databases, R has got you covered. Here's how to get started:</p>
-</div>
-</a>
-<a href="posts/2023-08-10-managing-data-in-r/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":["packages"]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 10, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Managing Packages in R</h2>
-<div class="dt-tags">
-<div class="dt-tag">packages</div>
-</div>
-<p>One of the great advantages of R is its extensive library of packages. These packages extend R's functionalities, offering tools for a variety of analytical tasks. Here's how to manage these packages:</p>
-</div>
-</a>
-<a href="posts/welcome/" class="post-preview">
-<script class="post-metadata" type="text/json">{"categories":[]}</script>
-<div class="metadata">
-<div class="publishedDate">Aug. 10, 2023</div>
-<div class="dt-authors">
-<div class="dt-author">Cédric Hassen-Khodja</div>
-</div>
-</div>
-<div class="thumbnail">
-<img/>
-</div>
-<div class="description">
-<h2>Welcome to R-vealing Data</h2>
-<div class="dt-tags"></div>
-<p>Welcome to my new blog, R-vealing Data. Whether you're a beginner or an expert in R, there are always tips and tricks that can make your work easier.</p>
-</div>
-</a>
-</div>
-<div class="posts-sidebar">
-<div class="sidebar-section categories">
-<h3>Categories</h3>
-<ul>
-<li>
-<a href="#category:Articles">Articles</a>
-<span class="category-count">(7)</span>
-</li>
-<li>
-<a href="#category:cleaning">cleaning</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:descriptive">descriptive</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:ggplot2">ggplot2</a>
-<span class="category-count">(2)</span>
-</li>
-<li>
-<a href="#category:import">import</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:Linear_regression">Linear regression</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:manipulation">manipulation</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:packages">packages</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:transformation">transformation</a>
-<span class="category-count">(1)</span>
-</li>
-<li>
-<a href="#category:visualization">visualization</a>
-<span class="category-count">(1)</span>
-</li>
-</ul>
-</div>
-</div>
-<div class="posts-more">
-<a href="#">More articles &raquo;</a>
-</div>
-</div>
-<!--/radix_placeholder_article_listing-->
-
-<div class="d-title">
-<h1>R-vealing Data</h1>
-<!--radix_placeholder_categories-->
 <!--/radix_placeholder_categories-->
-
+<p><p>Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors.</p></p>
 </div>
 
+<div class="d-byline">
+  Cédric Hassen-Khodja  
+  
+<br/>2023-10-27
+</div>
 
 <div class="d-article">
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="create-sample-sales-data">Create sample sales data</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+<span><span class='va'>sales_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span>  Sales <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span>, mean <span class='op'>=</span> <span class='fl'>100</span>, sd <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span>  Advertising <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span>, mean <span class='op'>=</span> <span class='fl'>50</span>, sd <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span>  Seasonality <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Summer"</span>, <span class='st'>"Fall"</span>, <span class='st'>"Winter"</span>, <span class='st'>"Spring"</span><span class='op'>)</span>, each <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span></span>
+<span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>Before building our model, let’s explore the data:</p>
+<h3 id="check-the-summary-statistics">Check the summary statistics</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>sales_data</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>     Sales         Advertising    Seasonality       
+ Min.   : 53.82   Min.   :29.47   Length:100        
+ 1st Qu.: 90.12   1st Qu.:41.99   Class :character  
+ Median :101.24   Median :47.74   Mode  :character  
+ Mean   :101.81   Mean   :48.92                     
+ 3rd Qu.:113.84   3rd Qu.:54.68                     
+ Max.   :143.75   Max.   :82.41                     </code></pre>
+</div>
+<p><u>Note</u>: The summary statistics for the variables Sales, Advertising, and Seasonality reveal the following important information succinctly:</p>
+<ol type="1">
+<li><strong>Sales</strong>:</li>
+</ol>
+<ul>
+<li>Sales vary significantly, ranging from approximately 53.82 to 143.75.</li>
+<li>The distribution of sales appears relatively symmetric, with a mean close to the median.</li>
+<li>Sales show moderate dispersion around the mean.</li>
+</ul>
+<ol start="2" type="1">
+<li><strong>Advertising</strong>:</li>
+</ol>
+<ul>
+<li>Advertising expenses vary significantly, ranging from approximately 29.47 to 82.41.</li>
+<li>The distribution of advertising expenses is not mentioned as either symmetric or non-symmetric in the summary.</li>
+<li>Advertising expenses exhibit moderate dispersion around the mean.</li>
+</ul>
+<ol start="3" type="1">
+<li><strong>Seasonality</strong>:</li>
+</ol>
+<ul>
+<li>The Seasonality variable is categorical, representing seasons (e.g., “Summer,” “Fall”).</li>
+<li>The summary indicates that the variable is of type “character,” and its mode is “character.”</li>
+</ul>
+<h3 id="examine-the-correlation-between-variables">Examine the correlation between variables</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cor</a></span><span class='op'>(</span><span class='va'>sales_data</span><span class='op'>$</span><span class='va'>Sales</span>, <span class='va'>sales_data</span><span class='op'>$</span><span class='va'>Advertising</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>[1] -0.04953215</code></pre>
+</div>
+<p><u>Note</u>: In summary, the correlation coefficient of approximately <em>-0.0495</em> suggests a weak negative relationship between Sales and Advertising expenses, but the correlation is so close to zero that it is unlikely to have practical significance in explaining Sales variability based on Advertising expenses alone.</p>
+<h3 id="visualize-the-data-distribution">Visualize the data distribution</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>sales_data</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Sales</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>binwidth <span class='op'>=</span> <span class='fl'>10</span>, fill <span class='op'>=</span> <span class='st'>"blue"</span>, </span>
+<span>                                                    color <span class='op'>=</span> <span class='st'>"black"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="linear-regression-analysis-with-r_files/figure-html5/unnamed-chunk-4-1.png" width="624" /></p>
+</div>
+<p><u>Note</u>: In summary, The data is somewhat normally distributed but leans slightly to the left (negatively skewed). the sales distribution suggests that the most common sales values are between 75 and 125, with fewer occurrences of extremely low or high sales</p>
+<h2 id="building-the-linear-regression-model">Building the Linear Regression Model</h2>
+<p>Now, let’s construct the linear regression model:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Fit the linear regression model</span></span>
+<span><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>Sales</span> <span class='op'>~</span> <span class='va'>Advertising</span> <span class='op'>+</span> <span class='va'>Seasonality</span>, data <span class='op'>=</span> <span class='va'>sales_data</span><span class='op'>)</span></span>
+<span><span class='va'>model</span></span></code></pre>
+</div>
+<pre><code>
+Call:
+lm(formula = Sales ~ Advertising + Seasonality, data = sales_data)
+
+Coefficients:
+      (Intercept)        Advertising  SeasonalitySpring  
+        106.36304           -0.09059            3.69334  
+SeasonalitySummer  SeasonalityWinter  
+         -2.75086           -1.43368  </code></pre>
+</div>
+<p><u>Note</u>: Linear regression model in R aims to explain the variable Sales as a function of Advertising and Seasonality.</p>
+<ol type="1">
+<li><p><strong>(Intercept)</strong>: This is the expected value of Sales when all other predictors are set to zero. In this case, if there’s no advertising and considering the reference category for seasonality (which is not shown, but we can infer might be ‘Autumn’ or ‘Fall’ given the other categories listed), the expected sales value is approximately 106.36304.</p></li>
+<li><p><strong>Advertising</strong>: The coefficient for Advertising is -0.09059. This means that for every one-unit increase in advertising, we can expect a decrease of 0.09059 in sales, assuming other factors remain constant. This is a bit counter-intuitive because we’d generally expect advertising to increase sales. However, this could be due to various reasons like ineffective advertising, the presence of other confounding variables, or multicollinearity.</p></li>
+<li><p><strong>SeasonalitySpring</strong>: The coefficient is 3.69334. This indicates that, relative to the reference season (presumably ‘Autumn’), sales in the Spring season are expected to be higher by approximately 3.69334 units, given that other factors remain constant.</p></li>
+<li><p><strong>SeasonalitySummer</strong>: The coefficient is -2.75086. Compared to the reference season, sales in the Summer are expected to decrease by approximately 2.75086 units, assuming all else remains the same.</p></li>
+<li><p><strong>SeasonalityWinter</strong>: The coefficient is -1.43368. This means that, relative to the reference season, sales in Winter are expected to be lower by about 1.43368 units, keeping everything else constant.</p></li>
+</ol>
+<p>In summary:</p>
+<ul>
+<li>The model suggests that advertising has a negative impact on sales, which may warrant further investigation.</li>
+<li>Spring seems to be a favorable season for sales compared to Autumn, while both Summer and Winter appear to be less favorable.</li>
+</ul>
+<h2 id="model-evaluation">Model Evaluation</h2>
+<p>Evaluate the model by examining:</p>
+<h3 id="residual-plots">Residual plots</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>model</span>, which <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="linear-regression-analysis-with-r_files/figure-html5/unnamed-chunk-6-1.png" width="624" /></p>
+</div>
+<p><u>Note</u>: the residuals show a generally good fit. The residuals are scattered around the zero line without a clear systematic pattern, suggesting that the linear model is appropriate for the data. Any slight deviation might be due to random noise, which is expected.</p>
+<h3 id="assumptions-of-linear-regression">Assumptions of linear regression</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>model</span>, which <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="linear-regression-analysis-with-r_files/figure-html5/unnamed-chunk-7-1.png" width="624" /></p>
+</div>
+<p><u>Note</u>: The residuals are approximately normally distributed, which supports the validity of the linear regression model.</p>
+<h3 id="model-performance-metrics">Model performance metrics</h3>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>
+Call:
+lm(formula = Sales ~ Advertising + Seasonality, data = sales_data)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-46.52 -11.20  -0.47  12.79  40.94 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       106.36304   10.03715  10.597   &lt;2e-16 ***
+Advertising        -0.09059    0.19573  -0.463    0.645    
+SeasonalitySpring   3.69334    5.22139   0.707    0.481    
+SeasonalitySummer  -2.75086    5.21896  -0.527    0.599    
+SeasonalityWinter  -1.43368    5.29078  -0.271    0.787    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 18.45 on 95 degrees of freedom
+Multiple R-squared:  0.02003,   Adjusted R-squared:  -0.02123 
+F-statistic: 0.4855 on 4 and 95 DF,  p-value: 0.7464</code></pre>
+</div>
+<p><u>Note</u>: This output is the summary of a linear regression model with the dependent variable <code>Sales</code> and independent variables <code>Advertising</code> and <code>Seasonality</code>. Let’s interpret the key parts:</p>
+<ol type="1">
+<li><strong>Residuals</strong>:
+<ul>
+<li>The residuals range from a minimum of -46.52 to a maximum of 40.94.</li>
+<li>The median residual is very close to zero (-0.47), which is a good sign, indicating that the model doesn’t systematically overpredict or underpredict sales.</li>
+</ul></li>
+<li><strong>Coefficients</strong>:
+<ul>
+<li><code>(Intercept)</code>: The estimated intercept is 106.36304. This represents the expected sales when all other predictors are zero. Given the nature of the predictors, this value might not have a meaningful real-world interpretation.</li>
+<li><code>Advertising</code>: For each unit increase in advertising, sales are expected to decrease by 0.09059 units. However, the p-value is 0.645, suggesting that this effect is not statistically significant.</li>
+<li><code>Seasonality</code>:
+<ul>
+<li>Spring: Sales are expected to be higher by 3.69334 units in spring compared to the reference season (probably ‘Autumn’ since it’s not listed). This is not statistically significant (p-value = 0.481).</li>
+<li>Summer: Sales are expected to be lower by 2.75086 units in summer compared to the reference season. This is also not statistically significant (p-value = 0.599).</li>
+<li>Winter: Sales are expected to be lower by 1.43368 units in winter compared to the reference season. Again, this is not statistically significant (p-value = 0.787).</li>
+</ul></li>
+</ul></li>
+<li><strong>Model Significance</strong>:
+<ul>
+<li>The <code>Multiple R-squared</code> value is 0.02003, which indicates that only about 2% of the variance in <code>Sales</code> is explained by the model. This is quite low.</li>
+<li>The <code>Adjusted R-squared</code> is negative, suggesting that the model doesn’t provide a better fit to the data than a simple mean model.</li>
+<li>The overall F-statistic tests the hypothesis that all regression coefficients are equal to zero (i.e., no effect). With a p-value of 0.7464, we fail to reject this hypothesis, suggesting that the predictors, as a whole, do not provide significant information in predicting <code>Sales</code>.</li>
+</ul></li>
+</ol>
+<p>In summary:</p>
+<ul>
+<li>The predictors <code>Advertising</code> and <code>Seasonality</code> do not seem to be significant predictors of <code>Sales</code> in this model. The model, as it stands, might not be a good fit for the data.</li>
+<li>Further exploration might be needed, perhaps considering other variables or looking into potential non-linear relationships or interactions.</li>
+</ul>
+<p>We’ll come back to this model in another post to see if we can’t improve it. Let’s move on and assume this omdel is adequate to fit data.</p>
+<h2 id="predicting-sales">Predicting Sales</h2>
+<p>Use the model to predict sales based on new data:</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Predict sales for new data</span></span>
+<span><span class='va'>new_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span></span>
+<span>  Advertising <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>60</span>, <span class='fl'>70</span>, <span class='fl'>80</span><span class='op'>)</span>,</span>
+<span>  Seasonality <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Summer"</span>, <span class='st'>"Fall"</span>, <span class='st'>"Winter"</span><span class='op'>)</span></span>
+<span><span class='op'>)</span></span>
+<span><span class='va'>predictions</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>model</span>, newdata <span class='op'>=</span> <span class='va'>new_data</span><span class='op'>)</span></span>
+<span><span class='va'>predictions</span></span></code></pre>
+</div>
+<pre><code>        1         2         3 
+ 98.17672 100.02167  97.68208 </code></pre>
+</div>
+<p><u>Note</u>: The prediction results based on the linear regression model are as follows:</p>
+<ul>
+<li><p>For the first observation (1), with an advertising expenditure of 60 and the season being “Summer,” the predicted sales are approximately 98.18.</p></li>
+<li><p>For the second observation (2), with an advertising expenditure of 70 and the season being “Fall,” the predicted sales are approximately 100.02.</p></li>
+<li><p>For the third observation (3), with an advertising expenditure of 80 and the season being “Winter,” the predicted sales are approximately 97.68.</p></li>
+</ul>
+<p>These predictions are based on the linear regression model that you previously fitted using the training data. The model attempts to make predictions based on the provided values of advertising expenditure and seasonality for each observation. It’s important to note that these predictions are based on the linear relationships modeled by the model, but the quality of predictions may vary depending on the accuracy of the model and the validity of the input data.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Linear regression analysis is a valuable technique for understanding and predicting relationships between variables. In this post, we’ve covered the entire process of performing linear regression analysis with R, from creating sample data to making predictions.</p>
+<p>Remember that effective interpretation of results and continuous refinement of models are essential for successful data analysis.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
