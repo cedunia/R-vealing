@@ -1,0 +1,188 @@
+---
+title: "Linear Regression Analysis with R: Predicting Sales"
+description: |
+  Linear regression analysis is a fundamental statistical technique used to model the relationship between a dependent variable and one or more independent variables. In this post, we will explore how to perform linear regression analysis using R to predict sales based on various factors.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2023-10-27
+categories: 
+  - [Linear regression]
+  - [ggplot2]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Load necessary libraries
+if (!require("ggplot2")) {
+  install.packages("ggplot2")
+}
+```
+
+## Create sample sales data
+
+
+```{r echo=TRUE, eval=TRUE}
+set.seed(123)
+sales_data <- data.frame(
+  Sales = rnorm(100, mean = 100, sd = 20),
+  Advertising = rnorm(100, mean = 50, sd = 10),
+  Seasonality = rep(c("Summer", "Fall", "Winter", "Spring"), each = 25)
+)
+```
+
+## Exploratory Data Analysis
+
+Before building our model, let's explore the data:
+
+### Check the summary statistics
+
+```{r echo=TRUE}
+summary(sales_data)
+```
+
+<u>Note</u>: The summary statistics for the variables Sales, Advertising, and Seasonality reveal the following important information succinctly:
+
+1. **Sales**:
+  - Sales vary significantly, ranging from approximately 53.82 to 143.75.
+  - The distribution of sales appears relatively symmetric, with a mean close to the median.
+  - Sales show moderate dispersion around the mean.
+
+2. **Advertising**:
+  - Advertising expenses vary significantly, ranging from approximately 29.47 to 82.41.
+  - The distribution of advertising expenses is not mentioned as either symmetric or non-symmetric in the summary.
+  - Advertising expenses exhibit moderate dispersion around the mean.
+
+3. **Seasonality**:
+  - The Seasonality variable is categorical, representing seasons (e.g., "Summer," "Fall").
+  - The summary indicates that the variable is of type "character," and its mode is "character."
+
+### Examine the correlation between variables
+
+```{r, echo=TRUE}
+cor(sales_data$Sales, sales_data$Advertising)
+```
+
+<u>Note</u>: In summary, the correlation coefficient of approximately *-0.0495* suggests a weak negative relationship between Sales and Advertising expenses, but the correlation is so close to zero that it is unlikely to have practical significance in explaining Sales variability based on Advertising expenses alone.
+
+### Visualize the data distribution
+
+```{r, echo=TRUE}
+ggplot(sales_data, aes(x = Sales)) + geom_histogram(binwidth = 10, fill = "blue", 
+                                                    color = "black")
+```
+
+<u>Note</u>: In summary, The data is somewhat normally distributed but leans slightly to the left (negatively skewed). the sales distribution suggests that the most common sales values are between 75 and 125, with fewer occurrences of extremely low or high sales
+
+## Building the Linear Regression Model
+
+Now, let's construct the linear regression model:
+
+```{r, echo=TRUE}
+# Fit the linear regression model
+model <- lm(Sales ~ Advertising + Seasonality, data = sales_data)
+model
+```
+
+<u>Note</u>: Linear regression model in R aims to explain the variable Sales as a function of Advertising and Seasonality. 
+
+1. **(Intercept)**: This is the expected value of Sales when all other predictors are set to zero. In this case, if there's no advertising and considering the reference category for seasonality (which is not shown, but we can infer might be 'Autumn' or 'Fall' given the other categories listed), the expected sales value is approximately 106.36304.
+
+2. **Advertising**: The coefficient for Advertising is -0.09059. This means that for every one-unit increase in advertising, we can expect a decrease of 0.09059 in sales, assuming other factors remain constant. This is a bit counter-intuitive because we'd generally expect advertising to increase sales. However, this could be due to various reasons like ineffective advertising, the presence of other confounding variables, or multicollinearity.
+
+3. **SeasonalitySpring**: The coefficient is 3.69334. This indicates that, relative to the reference season (presumably 'Autumn'), sales in the Spring season are expected to be higher by approximately 3.69334 units, given that other factors remain constant.
+
+4. **SeasonalitySummer**: The coefficient is -2.75086. Compared to the reference season, sales in the Summer are expected to decrease by approximately 2.75086 units, assuming all else remains the same.
+
+5. **SeasonalityWinter**: The coefficient is -1.43368. This means that, relative to the reference season, sales in Winter are expected to be lower by about 1.43368 units, keeping everything else constant.
+
+In summary:
+
+- The model suggests that advertising has a negative impact on sales, which may warrant further investigation.
+- Spring seems to be a favorable season for sales compared to Autumn, while both Summer and Winter appear to be less favorable.
+
+## Model Evaluation
+
+Evaluate the model by examining:
+
+### Residual plots
+
+```{r, echo=TRUE}
+plot(model, which = 1)
+```
+
+<u>Note</u>: the residuals show a generally good fit. The residuals are scattered around the zero line without a clear systematic pattern, suggesting that the linear model is appropriate for the data. Any slight deviation might be due to random noise, which is expected.
+
+### Assumptions of linear regression
+
+```{r, echo=TRUE}
+plot(model, which = 2)
+```
+
+<u>Note</u>: The residuals are approximately normally distributed, which supports the validity of the linear regression model.
+
+### Model performance metrics
+
+```{r, echo=TRUE}
+summary(model)
+```
+
+<u>Note</u>: This output is the summary of a linear regression model with the dependent variable `Sales` and independent variables `Advertising` and `Seasonality`. Let's interpret the key parts:
+
+1. **Residuals**:
+   - The residuals range from a minimum of -46.52 to a maximum of 40.94.
+   - The median residual is very close to zero (-0.47), which is a good sign, indicating that the model doesn't systematically overpredict or underpredict sales.
+
+2. **Coefficients**:
+   - `(Intercept)`: The estimated intercept is 106.36304. This represents the expected sales when all other predictors are zero. Given the nature of the predictors, this value might not have a meaningful real-world interpretation.
+   - `Advertising`: For each unit increase in advertising, sales are expected to decrease by 0.09059 units. However, the p-value is 0.645, suggesting that this effect is not statistically significant.
+   - `Seasonality`:
+     - Spring: Sales are expected to be higher by 3.69334 units in spring compared to the reference season (probably 'Autumn' since it's not listed). This is not statistically significant (p-value = 0.481).
+     - Summer: Sales are expected to be lower by 2.75086 units in summer compared to the reference season. This is also not statistically significant (p-value = 0.599).
+     - Winter: Sales are expected to be lower by 1.43368 units in winter compared to the reference season. Again, this is not statistically significant (p-value = 0.787).
+
+3. **Model Significance**:
+   - The `Multiple R-squared` value is 0.02003, which indicates that only about 2% of the variance in `Sales` is explained by the model. This is quite low.
+   - The `Adjusted R-squared` is negative, suggesting that the model doesn't provide a better fit to the data than a simple mean model.
+   - The overall F-statistic tests the hypothesis that all regression coefficients are equal to zero (i.e., no effect). With a p-value of 0.7464, we fail to reject this hypothesis, suggesting that the predictors, as a whole, do not provide significant information in predicting `Sales`.
+   
+In summary:
+
+- The predictors `Advertising` and `Seasonality` do not seem to be significant predictors of `Sales` in this model. The model, as it stands, might not be a good fit for the data.
+- Further exploration might be needed, perhaps considering other variables or looking into potential non-linear relationships or interactions.
+
+We'll come back to this model in another post to see if we can't improve it. Let's move on and assume this omdel is adequate to fit data.
+
+## Predicting Sales
+
+Use the model to predict sales based on new data:
+
+```{r, echo=TRUE}
+# Predict sales for new data
+new_data <- data.frame(
+  Advertising = c(60, 70, 80),
+  Seasonality = c("Summer", "Fall", "Winter")
+)
+predictions <- predict(model, newdata = new_data)
+predictions
+```
+
+<u>Note</u>: The prediction results based on the linear regression model are as follows:
+
+- For the first observation (1), with an advertising expenditure of 60 and the season being "Summer," the predicted sales are approximately 98.18.
+
+- For the second observation (2), with an advertising expenditure of 70 and the season being "Fall," the predicted sales are approximately 100.02.
+
+- For the third observation (3), with an advertising expenditure of 80 and the season being "Winter," the predicted sales are approximately 97.68.
+
+These predictions are based on the linear regression model that you previously fitted using the training data. The model attempts to make predictions based on the provided values of advertising expenditure and seasonality for each observation. It's important to note that these predictions are based on the linear relationships modeled by the model, but the quality of predictions may vary depending on the accuracy of the model and the validity of the input data.
+
+## Conclusion
+
+Linear regression analysis is a valuable technique for understanding and predicting relationships between variables. In this post, we've covered the entire process of performing linear regression analysis with R, from creating sample data to making predictions.
+
+Remember that effective interpretation of results and continuous refinement of models are essential for successful data analysis.
