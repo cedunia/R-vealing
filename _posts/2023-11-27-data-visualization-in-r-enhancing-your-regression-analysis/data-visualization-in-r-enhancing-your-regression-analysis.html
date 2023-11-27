@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { color: #00769e; background-color: #f1f3f5; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #00769e; } /* Normal */
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { color: #657422; } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #00769e; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #00769e; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #00769e; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+
+  <!--radix_placeholder_meta_tags-->
+  <title>Data Visualization in R: Enhancing Your Regression Analysis</title>
+
+  <meta property="description" itemprop="description" content="Dive into advanced data visualization techniques in R to enhance the interpretation of linear regression analysis results. Using the `mtcars` dataset, we explore how ggplot2 and plotly can provide deeper insights into regression models."/>
+
+
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2023-11-27"/>
+  <meta property="article:created" itemprop="dateCreated" content="2023-11-27"/>
+  <meta name="article:author" content="Cédric Hassen-Khodja"/>
+
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="Data Visualization in R: Enhancing Your Regression Analysis"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="Dive into advanced data visualization techniques in R to enhance the interpretation of linear regression analysis results. Using the `mtcars` dataset, we explore how ggplot2 and plotly can provide deeper insights into regression models."/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="Data Visualization in R: Enhancing Your Regression Analysis"/>
+  <meta property="twitter:description" content="Dive into advanced data visualization techniques in R to enhance the interpretation of linear regression analysis results. Using the `mtcars` dataset, we explore how ggplot2 and plotly can provide deeper insights into regression models."/>
+
+  <!--/radix_placeholder_meta_tags-->
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","theme","author","date","categories","output"]}},"value":[{"type":"character","attributes":{},"value":["Data Visualization in R: Enhancing Your Regression Analysis"]},{"type":"character","attributes":{},"value":["Dive into advanced data visualization techniques in R to enhance the interpretation of linear regression analysis results. Using the `mtcars` dataset, we explore how ggplot2 and plotly can provide deeper insights into regression models.\n"]},{"type":"character","attributes":{},"value":["theme.css"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Cédric Hassen-Khodja"]}]}]},{"type":"character","attributes":{},"value":["2023-11-27"]},{"type":"character","attributes":{},"value":["Linear regression","Visualization"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["data-visualization-in-r-enhancing-your-regression-analysis_files/anchor-4.2.2/anchor.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/bowser-1.9.3/bowser.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/css/crosstalk.min.css","data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/js/crosstalk.js","data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/js/crosstalk.js.map","data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/js/crosstalk.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/js/crosstalk.min.js.map","data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/scss/crosstalk.scss","data-visualization-in-r-enhancing-your-regression-analysis_files/distill-2.2.21/template.v2.js","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/box_histogram-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/ggplot2_enhance-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/regression_line-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/residuals_qqplot_enhanced-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/residuals_qqplot-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/residuals_qqplot-2.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/residuals-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/scatter_plot-1.png","data-visualization-in-r-enhancing-your-regression-analysis_files/header-attrs-2.25/header-attrs.js","data-visualization-in-r-enhancing-your-regression-analysis_files/htmlwidgets-1.6.2/htmlwidgets.js","data-visualization-in-r-enhancing-your-regression-analysis_files/jquery-3.6.0/jquery-3.6.0.js","data-visualization-in-r-enhancing-your-regression-analysis_files/jquery-3.6.0/jquery-3.6.0.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/jquery-3.6.0/jquery-3.6.0.min.map","data-visualization-in-r-enhancing-your-regression-analysis_files/plotly-binding-4.10.3/plotly.js","data-visualization-in-r-enhancing-your-regression-analysis_files/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css","data-visualization-in-r-enhancing-your-regression-analysis_files/plotly-main-2.11.1/plotly-latest.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/popper-2.6.0/popper.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy-bundle.umd.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy-light-border.css","data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy.css","data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy.umd.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/typedarray-0.1/typedarray.min.js","data-visualization-in-r-enhancing-your-regression-analysis_files/webcomponents-2.0.0/webcomponents.js"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+  <style type="text/css">
+
+  body {
+    background-color: white;
+  }
+
+  .pandoc-table {
+    width: 100%;
+  }
+
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+    font-size: 100%;
+  }
+
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .shaded-content {
+    background: white;
+  }
+
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+  }
+
+  d-appendix {
+    padding-top: 30px;
+  }
+
+  d-article>p>img {
+    width: 100%;
+  }
+
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+
+  /* Tweak code blocks */
+
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+
+  d-article div.sourceCode {
+    background-color: white;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  d-article pre a {
+    border-bottom: none;
+  }
+
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+
+  @media(min-width: 768px) {
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  d-article pre {
+    font-size: 14px;
+  }
+
+  }
+
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  /* CSS for d-contents */
+
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .d-contents li {
+    list-style-type: none
+  }
+
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+
+  .d-contents ul {
+    padding-left: 1em
+  }
+
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+
+
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+
+
+  /* Figure */
+
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+
+  /* Citations */
+
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+
+  /* Citation hover box */
+
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+
+
+  /* Tweak 1000px media break to show more text */
+
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+
+    .grid {
+      grid-column-gap: 16px;
+    }
+
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+
+
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Include appendix styles here so they can be overridden */
+
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  d-appendix > * {
+    grid-column: text;
+  }
+
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+
+  /* Include footnote styles here so they can be overridden */
+
+  d-footnote-list {
+    contain: layout style;
+  }
+
+  d-footnote-list > * {
+    grid-column: text;
+  }
+
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+
+
+
+  /* Anchor.js */
+
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+
+  /* Social footer */
+
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+
+  .disqus-comments {
+    margin-right: 30px;
+  }
+
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  #disqus_thread {
+    margin-top: 30px;
+  }
+
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+
+
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+
+
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+
+  /* Styles for posts lists (not auto-injected) */
+
+
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .posts-list img {
+    opacity: 1;
+  }
+
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+
+  .posts-more {
+    clear: both;
+  }
+
+
+  .posts-sidebar {
+    font-size: 16px;
+  }
+
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+
+  .categories li>a {
+    border-bottom: none;
+  }
+
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  .categories .active {
+    font-weight: 600;
+  }
+
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+
+
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+
+
+
+  </style>
+
+  <script type="application/javascript">
+
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+
+  // show body when load is complete
+  function on_load_complete() {
+
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+
+
+    // set body to visible
+    document.body.style.visibility = 'visible';
+
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+
+  function init_distill() {
+
+    init_common();
+
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+
+      // capture layout
+      var layout = $(this).attr('data-layout');
+
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+
+
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme
+    $('code.sourceCode a:empty').remove();
+
+    // load distill framework
+    load_distill_framework();
+
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        const citeChild = $(this).children()[0]
+        // Do not process if @xyz has been used without escaping and without bibliography activated
+        // https://github.com/rstudio/distill/issues/466
+        if (citeChild === undefined) return true
+
+        if (citeChild.nodeName == "D-FOOTNOTE") {
+          var fn = citeChild
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          // Could use CSS.escape too here, we insure backward compatibility in navigator
+          return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
+        }).join("\n");
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
+
+      // clear polling timer
+      clearInterval(tid);
+
+      // show body now that everything is ready
+      on_load_complete();
+    }
+
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+
+  }
+
+  function init_downlevel() {
+
+    init_common();
+
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+
+    // remove toc
+    $('.d-contents').remove();
+
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+
+
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+
+    $('body').addClass('downlevel');
+
+    on_load_complete();
+  }
+
+
+  function init_common() {
+
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+
+      }
+    });
+
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
+      });
+    }
+
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+
+  </script>
+
+  <!--/radix_placeholder_distill-->
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/header-attrs-2.25/header-attrs.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/plotly-binding-4.10.3/plotly.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/typedarray-0.1/typedarray.min.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <link href="data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+  <link href="data-visualization-in-r-enhancing-your-regression-analysis_files/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/plotly-main-2.11.1/plotly-latest.min.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/popper-2.6.0/popper.min.js"></script>
+  <link href="data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="data-visualization-in-r-enhancing-your-regression-analysis_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Data Visualization in R: Enhancing Your Regression Analysis","description":"Dive into advanced data visualization techniques in R to enhance the interpretation of linear regression analysis results. Using the `mtcars` dataset, we explore how ggplot2 and plotly can provide deeper insights into regression models.","authors":[{"author":"Cédric Hassen-Khodja","authorURL":"#","affiliation":"&nbsp;","affiliationURL":"#","orcidID":""}],"publishedDate":"2023-11-27T00:00:00.000+01:00","citationText":"Hassen-Khodja, 2023"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Data Visualization in R: Enhancing Your Regression Analysis</h1>
+<!--radix_placeholder_categories-->
+<div class="dt-tags">
+<div class="dt-tag">Linear regression</div>
+<div class="dt-tag">Visualization</div>
+</div>
+<!--/radix_placeholder_categories-->
+<p><p>Dive into advanced data visualization techniques in R to enhance the interpretation of linear regression analysis results. Using the <code>mtcars</code> dataset, we explore how ggplot2 and plotly can provide deeper insights into regression models.</p></p>
+</div>
+
+<div class="d-byline">
+  Cédric Hassen-Khodja  
+  
+<br/>2023-11-27
+</div>
+
+<div class="d-article">
+<h2 id="introduction">Introduction</h2>
+<p>Data visualization is a powerful tool in statistical analysis, especially in the context of regression analysis. It helps in identifying trends, patterns, and potential issues in the data. In this post, we’ll explore various data visualization techniques using the <code>mtcars</code> dataset in R, demonstrating how these techniques can enhance our understanding and presentation of regression analysis results.</p>
+<h2 id="visualizing-data-before-regression">Visualizing Data Before Regression</h2>
+<h3 id="scatter-plots">Scatter Plots</h3>
+<p>Before diving into regression, it’s crucial to understand the relationship between variables. Scatter plots are a great way to visualize these relationships.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>wt</span>, y<span class='op'>=</span><span class='va'>mpg</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Scatter plot of MPG vs Weight"</span>, x<span class='op'>=</span><span class='st'>"Weight"</span>, y<span class='op'>=</span><span class='st'>"Miles per Gallon"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/scatter_plot-1.png" width="624" /></p>
+</div>
+<p>This plot shows the relationship between the weight of the cars (<code>wt</code>) and their fuel efficiency (<code>mpg</code>).</p>
+<h3 id="box-plots-and-histograms">Box Plots and Histograms</h3>
+<p>Box plots and histograms provide insights into the distribution of variables, which is important for regression analysis.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/boxplot.html'>boxplot</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>$</span><span class='va'>mpg</span>, main<span class='op'>=</span><span class='st'>"Boxplot of MPG"</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>$</span><span class='va'>mpg</span>, main<span class='op'>=</span><span class='st'>"Histogram of MPG"</span>, xlab<span class='op'>=</span><span class='st'>"Miles per Gallon"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/box_histogram-1.png" width="624" /></p>
+</div>
+<p>The box plot and histogram of <code>mpg</code> indicate the spread and central tendency of fuel efficiency across different cars.</p>
+<h2 id="visualizing-linear-regression-results">Visualizing Linear Regression Results</h2>
+<h3 id="scatter-plots-with-regression-lines">Scatter Plots with Regression Lines</h3>
+<p>Visualizing the regression line alongside the data points helps in assessing the model fit.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>wt</span>, y<span class='op'>=</span><span class='va'>mpg</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method<span class='op'>=</span><span class='st'>"lm"</span>, se<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Scatter plot with Regression Line"</span>, x<span class='op'>=</span><span class='st'>"Weight"</span>, y<span class='op'>=</span><span class='st'>"Miles per Gallon"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/regression_line-1.png" width="624" /></p>
+</div>
+<p>This plot illustrates how well the linear model fits the data.</p>
+<h3 id="enhancing-plots-with-ggplot2">Enhancing Plots with ggplot2</h3>
+<p>Enhancing plots with ggplot2 can make interpretations clearer and more intuitive.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>wt</span>, y<span class='op'>=</span><span class='va'>mpg</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span>color<span class='op'>=</span><span class='st'>"blue"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method<span class='op'>=</span><span class='st'>"lm"</span>, se<span class='op'>=</span><span class='cn'>TRUE</span>, color<span class='op'>=</span><span class='st'>"red"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Enhanced Scatter plot with ggplot2"</span>, x<span class='op'>=</span><span class='st'>"Weight"</span>, y<span class='op'>=</span><span class='st'>"Miles per Gallon"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/ggplot2_enhance-1.png" width="624" /></p>
+</div>
+<p>The enhanced plot provides a clearer visualization of the regression line and data points.</p>
+<h2 id="residual-analysis">Residual Analysis</h2>
+<h3 id="understanding-and-visualizing-residuals">Understanding and Visualizing Residuals</h3>
+<p>Analyzing residuals is key to understanding the performance of a regression model.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>wt</span>, data<span class='op'>=</span><span class='va'>mtcars</span><span class='op'>)</span></span>
+<span><span class='va'>residuals_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/as.data.frame.html'>as.data.frame</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/qqnorm.html'>qqnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>resid</a></span><span class='op'>(</span><span class='va'>model</span><span class='op'>)</span>, plot.it <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>residuals_data</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Theoretical"</span>, <span class='st'>"Residuals"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Calculate the standard deviation of residuals</span></span>
+<span><span class='va'>residuals_std</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/sd.html'>sd</a></span><span class='op'>(</span><span class='va'>residuals_data</span><span class='op'>$</span><span class='va'>Residuals</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Flag outliers - points more than 2 standard deviations from the mean</span></span>
+<span><span class='va'>residuals_data</span><span class='op'>$</span><span class='va'>Outlier</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span><span class='op'>(</span><span class='va'>residuals_data</span><span class='op'>$</span><span class='va'>Residuals</span><span class='op'>)</span> <span class='op'>&gt;</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='va'>residuals_std</span></span>
+<span></span>
+<span><span class='co'># Creating the enhanced QQ plot</span></span>
+<span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>residuals_data</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Theoretical</span>, y <span class='op'>=</span> <span class='va'>Residuals</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='va'>Outlier</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_qq.html'>geom_qq_line</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>sample <span class='op'>=</span> <span class='va'>Residuals</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_color_manual</a></span><span class='op'>(</span>values <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"black"</span>, <span class='st'>"red"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title<span class='op'>=</span><span class='st'>"Enhanced QQ Plot for Residuals"</span>, x<span class='op'>=</span><span class='st'>"Theoretical Quantiles"</span>, y<span class='op'>=</span><span class='st'>"Sample Quantiles"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="data-visualization-in-r-enhancing-your-regression-analysis_files/figure-html5/residuals_qqplot_enhanced-1.png" width="624" /></p>
+</div>
+<p>The residual plot helps to diagnose issues with the model, like non-linearity or heteroscedasticity.</p>
+<h3 id="checking-for-normality-of-residuals">Checking for Normality of Residuals</h3>
+<p>It’s important to check if the residuals from our regression model are normally distributed. This can be done using a QQ plot.</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<h2 id="interactive-visualizations-with-plotly">Interactive Visualizations with Plotly</h2>
+<h3 id="creating-interactive-plots">Creating Interactive Plots</h3>
+<p>Interactive plots make it easier to explore complex data and models.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://plotly-r.com'>plotly</a></span><span class='op'>)</span></span>
+<span><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>mtcars</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>wt</span>, y<span class='op'>=</span><span class='va'>mpg</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method<span class='op'>=</span><span class='st'>"lm"</span>, se<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/plotly/man/ggplotly.html'>ggplotly</a></span><span class='op'>(</span><span class='va'>p</span><span class='op'>)</span></span></code></pre>
+</div>
+<div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-06ddd138c05fbf45ed1d" style="width:624px;height:384px;"></div>
+<script type="application/json" data-for="htmlwidget-06ddd138c05fbf45ed1d">{"x":{"data":[{"x":[2.6200000000000001,2.875,2.3199999999999998,3.2149999999999999,3.4399999999999999,3.46,3.5699999999999998,3.1899999999999999,3.1499999999999999,3.4399999999999999,3.4399999999999999,4.0700000000000003,3.73,3.7799999999999998,5.25,5.4240000000000004,5.3449999999999998,2.2000000000000002,1.615,1.835,2.4649999999999999,3.52,3.4350000000000001,3.8399999999999999,3.8450000000000002,1.9350000000000001,2.1400000000000001,1.5129999999999999,3.1699999999999999,2.77,3.5699999999999998,2.7799999999999998],"y":[21,21,22.800000000000001,21.399999999999999,18.699999999999999,18.100000000000001,14.300000000000001,24.399999999999999,22.800000000000001,19.199999999999999,17.800000000000001,16.399999999999999,17.300000000000001,15.199999999999999,10.4,10.4,14.699999999999999,32.399999999999999,30.399999999999999,33.899999999999999,21.5,15.5,15.199999999999999,13.300000000000001,19.199999999999999,27.300000000000001,26,30.399999999999999,15.800000000000001,19.699999999999999,15,21.399999999999999],"text":["wt: 2.620<br />mpg: 21.0","wt: 2.875<br />mpg: 21.0","wt: 2.320<br />mpg: 22.8","wt: 3.215<br />mpg: 21.4","wt: 3.440<br />mpg: 18.7","wt: 3.460<br />mpg: 18.1","wt: 3.570<br />mpg: 14.3","wt: 3.190<br />mpg: 24.4","wt: 3.150<br />mpg: 22.8","wt: 3.440<br />mpg: 19.2","wt: 3.440<br />mpg: 17.8","wt: 4.070<br />mpg: 16.4","wt: 3.730<br />mpg: 17.3","wt: 3.780<br />mpg: 15.2","wt: 5.250<br />mpg: 10.4","wt: 5.424<br />mpg: 10.4","wt: 5.345<br />mpg: 14.7","wt: 2.200<br />mpg: 32.4","wt: 1.615<br />mpg: 30.4","wt: 1.835<br />mpg: 33.9","wt: 2.465<br />mpg: 21.5","wt: 3.520<br />mpg: 15.5","wt: 3.435<br />mpg: 15.2","wt: 3.840<br />mpg: 13.3","wt: 3.845<br />mpg: 19.2","wt: 1.935<br />mpg: 27.3","wt: 2.140<br />mpg: 26.0","wt: 1.513<br />mpg: 30.4","wt: 3.170<br />mpg: 15.8","wt: 2.770<br />mpg: 19.7","wt: 3.570<br />mpg: 15.0","wt: 2.780<br />mpg: 21.4"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.5129999999999999,1.5625063291139241,1.612012658227848,1.6615189873417722,1.7110253164556961,1.7605316455696203,1.8100379746835442,1.8595443037974684,1.9090506329113923,1.9585569620253165,2.0080632911392406,2.0575696202531644,2.1070759493670885,2.1565822784810127,2.2060886075949369,2.255594936708861,2.3051012658227847,2.3546075949367089,2.4041139240506331,2.4536202531645568,2.5031265822784809,2.5526329113924051,2.6021392405063293,2.6516455696202534,2.7011518987341772,2.7506582278481013,2.8001645569620255,2.8496708860759492,2.8991772151898738,2.9486835443037975,2.9981898734177217,3.0476962025316459,3.0972025316455696,3.1467088607594942,3.1962151898734179,3.2457215189873421,3.2952278481012662,3.34473417721519,3.3942405063291141,3.4437468354430383,3.493253164556962,3.5427594936708862,3.5922658227848103,3.6417721518987345,3.6912784810126587,3.7407848101265824,3.7902911392405065,3.8397974683544307,3.8893037974683549,3.938810126582279,3.9883164556962027,4.0378227848101265,4.0873291139240511,4.1368354430379757,4.1863417721518985,4.2358481012658231,4.2853544303797477,4.3348607594936714,4.3843670886075952,4.4338734177215198,4.4833797468354435,4.5328860759493672,4.5823924050632918,4.6318987341772155,4.6814050632911393,4.7309113924050639,4.7804177215189885,4.8299240506329113,4.8794303797468359,4.9289367088607605,4.9784430379746842,5.027949367088608,5.0774556962025326,5.1269620253164563,5.17646835443038,5.2259746835443046,5.2754810126582283,5.324987341772152,5.3744936708860767,5.4240000000000004],"y":[29.198940677812615,28.934355509193395,28.669770340574175,28.405185171954955,28.140600003335734,27.876014834716514,27.611429666097294,27.346844497478074,27.082259328858854,26.817674160239633,26.553088991620413,26.288503823001196,26.023918654381976,25.759333485762753,25.494748317143532,25.230163148524312,24.965577979905095,24.700992811285872,24.436407642666651,24.171822474047435,23.907237305428215,23.642652136808991,23.378066968189771,23.11348179957055,22.848896630951334,22.58431146233211,22.31972629371289,22.055141125093673,21.790555956474449,21.525970787855233,21.261385619236012,20.996800450616789,20.732215281997572,20.467630113378348,20.203044944759132,19.938459776139911,19.673874607520688,19.409289438901471,19.144704270282251,18.880119101663031,18.61553393304381,18.35094876442459,18.08636359580537,17.82177842718615,17.557193258566926,17.292608089947709,17.028022921328489,16.763437752709269,16.498852584090049,16.234267415470825,15.969682246851608,15.705097078232388,15.440511909613168,15.175926740993944,14.911341572374731,14.646756403755507,14.382171235136283,14.117586066517063,13.853000897897846,13.588415729278623,13.323830560659406,13.059245392040186,12.794660223420962,12.530075054801745,12.265489886182525,12.000904717563305,11.736319548944081,11.471734380324868,11.207149211705644,10.942564043086421,10.6779788744672,10.413393705847984,10.14880853722876,9.8842233686095433,9.6196381999903231,9.3550530313710993,9.0904678627518827,8.8258826941326625,8.5612975255134423,8.296712356894222],"text":["wt: 1.513000<br />mpg: 29.198941","wt: 1.562506<br />mpg: 28.934356","wt: 1.612013<br />mpg: 28.669770","wt: 1.661519<br />mpg: 28.405185","wt: 1.711025<br />mpg: 28.140600","wt: 1.760532<br />mpg: 27.876015","wt: 1.810038<br />mpg: 27.611430","wt: 1.859544<br />mpg: 27.346844","wt: 1.909051<br />mpg: 27.082259","wt: 1.958557<br />mpg: 26.817674","wt: 2.008063<br />mpg: 26.553089","wt: 2.057570<br />mpg: 26.288504","wt: 2.107076<br />mpg: 26.023919","wt: 2.156582<br />mpg: 25.759333","wt: 2.206089<br />mpg: 25.494748","wt: 2.255595<br />mpg: 25.230163","wt: 2.305101<br />mpg: 24.965578","wt: 2.354608<br />mpg: 24.700993","wt: 2.404114<br />mpg: 24.436408","wt: 2.453620<br />mpg: 24.171822","wt: 2.503127<br />mpg: 23.907237","wt: 2.552633<br />mpg: 23.642652","wt: 2.602139<br />mpg: 23.378067","wt: 2.651646<br />mpg: 23.113482","wt: 2.701152<br />mpg: 22.848897","wt: 2.750658<br />mpg: 22.584311","wt: 2.800165<br />mpg: 22.319726","wt: 2.849671<br />mpg: 22.055141","wt: 2.899177<br />mpg: 21.790556","wt: 2.948684<br />mpg: 21.525971","wt: 2.998190<br />mpg: 21.261386","wt: 3.047696<br />mpg: 20.996800","wt: 3.097203<br />mpg: 20.732215","wt: 3.146709<br />mpg: 20.467630","wt: 3.196215<br />mpg: 20.203045","wt: 3.245722<br />mpg: 19.938460","wt: 3.295228<br />mpg: 19.673875","wt: 3.344734<br />mpg: 19.409289","wt: 3.394241<br />mpg: 19.144704","wt: 3.443747<br />mpg: 18.880119","wt: 3.493253<br />mpg: 18.615534","wt: 3.542759<br />mpg: 18.350949","wt: 3.592266<br />mpg: 18.086364","wt: 3.641772<br />mpg: 17.821778","wt: 3.691278<br />mpg: 17.557193","wt: 3.740785<br />mpg: 17.292608","wt: 3.790291<br />mpg: 17.028023","wt: 3.839797<br />mpg: 16.763438","wt: 3.889304<br />mpg: 16.498853","wt: 3.938810<br />mpg: 16.234267","wt: 3.988316<br />mpg: 15.969682","wt: 4.037823<br />mpg: 15.705097","wt: 4.087329<br />mpg: 15.440512","wt: 4.136835<br />mpg: 15.175927","wt: 4.186342<br />mpg: 14.911342","wt: 4.235848<br />mpg: 14.646756","wt: 4.285354<br />mpg: 14.382171","wt: 4.334861<br />mpg: 14.117586","wt: 4.384367<br />mpg: 13.853001","wt: 4.433873<br />mpg: 13.588416","wt: 4.483380<br />mpg: 13.323831","wt: 4.532886<br />mpg: 13.059245","wt: 4.582392<br />mpg: 12.794660","wt: 4.631899<br />mpg: 12.530075","wt: 4.681405<br />mpg: 12.265490","wt: 4.730911<br />mpg: 12.000905","wt: 4.780418<br />mpg: 11.736320","wt: 4.829924<br />mpg: 11.471734","wt: 4.879430<br />mpg: 11.207149","wt: 4.928937<br />mpg: 10.942564","wt: 4.978443<br />mpg: 10.677979","wt: 5.027949<br />mpg: 10.413394","wt: 5.077456<br />mpg: 10.148809","wt: 5.126962<br />mpg:  9.884223","wt: 5.176468<br />mpg:  9.619638","wt: 5.225975<br />mpg:  9.355053","wt: 5.275481<br />mpg:  9.090468","wt: 5.324987<br />mpg:  8.825883","wt: 5.374494<br />mpg:  8.561298","wt: 5.424000<br />mpg:  8.296712"],"type":"scatter","mode":"lines","name":"fitted values","line":{"width":3.7795275590551185,"color":"rgba(51,102,255,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1.5129999999999999,1.5625063291139241,1.612012658227848,1.6615189873417722,1.7110253164556961,1.7605316455696203,1.8100379746835442,1.8595443037974684,1.9090506329113923,1.9585569620253165,2.0080632911392406,2.0575696202531644,2.1070759493670885,2.1565822784810127,2.2060886075949369,2.255594936708861,2.3051012658227847,2.3546075949367089,2.4041139240506331,2.4536202531645568,2.5031265822784809,2.5526329113924051,2.6021392405063293,2.6516455696202534,2.7011518987341772,2.7506582278481013,2.8001645569620255,2.8496708860759492,2.8991772151898738,2.9486835443037975,2.9981898734177217,3.0476962025316459,3.0972025316455696,3.1467088607594942,3.1962151898734179,3.2457215189873421,3.2952278481012662,3.34473417721519,3.3942405063291141,3.4437468354430383,3.493253164556962,3.5427594936708862,3.5922658227848103,3.6417721518987345,3.6912784810126587,3.7407848101265824,3.7902911392405065,3.8397974683544307,3.8893037974683549,3.938810126582279,3.9883164556962027,4.0378227848101265,4.0873291139240511,4.1368354430379757,4.1863417721518985,4.2358481012658231,4.2853544303797477,4.3348607594936714,4.3843670886075952,4.4338734177215198,4.4833797468354435,4.5328860759493672,4.5823924050632918,4.6318987341772155,4.6814050632911393,4.7309113924050639,4.7804177215189885,4.8299240506329113,4.8794303797468359,4.9289367088607605,4.9784430379746842,5.027949367088608,5.0774556962025326,5.1269620253164563,5.17646835443038,5.2259746835443046,5.2754810126582283,5.324987341772152,5.3744936708860767,5.4240000000000004,5.4240000000000004,5.4240000000000004,5.3744936708860767,5.324987341772152,5.2754810126582283,5.2259746835443046,5.17646835443038,5.1269620253164563,5.0774556962025326,5.027949367088608,4.9784430379746842,4.9289367088607605,4.8794303797468359,4.8299240506329113,4.7804177215189885,4.7309113924050639,4.6814050632911393,4.6318987341772155,4.5823924050632918,4.5328860759493672,4.4833797468354435,4.4338734177215198,4.3843670886075952,4.3348607594936714,4.2853544303797477,4.2358481012658231,4.1863417721518985,4.1368354430379757,4.0873291139240511,4.0378227848101265,3.9883164556962027,3.938810126582279,3.8893037974683549,3.8397974683544307,3.7902911392405065,3.7407848101265824,3.6912784810126587,3.6417721518987345,3.5922658227848103,3.5427594936708862,3.493253164556962,3.4437468354430383,3.3942405063291141,3.34473417721519,3.2952278481012662,3.2457215189873421,3.1962151898734179,3.1467088607594942,3.0972025316455696,3.0476962025316459,2.9981898734177217,2.9486835443037975,2.8991772151898738,2.8496708860759492,2.8001645569620255,2.7506582278481013,2.7011518987341772,2.6516455696202534,2.6021392405063293,2.5526329113924051,2.5031265822784809,2.4536202531645568,2.4041139240506331,2.3546075949367089,2.3051012658227847,2.255594936708861,2.2060886075949369,2.1565822784810127,2.1070759493670885,2.0575696202531644,2.0080632911392406,1.9585569620253165,1.9090506329113923,1.8595443037974684,1.8100379746835442,1.7605316455696203,1.7110253164556961,1.6615189873417722,1.612012658227848,1.5625063291139241,1.5129999999999999,1.5129999999999999],"y":[26.963759624304608,26.748211630977995,26.532293643118017,26.315979803952715,26.099242031586883,25.882049807548864,25.664369946436722,25.44616634589806,25.227399716523077,25.008027291740937,24.788002518534249,24.567274730785908,24.345788808417524,24.123484827250298,23.900297706804906,23.676156866145334,23.450985901439953,23.224702303209199,22.997217236244655,22.76843541081476,22.538255079768415,22.306568202054894,22.073260818274996,21.838213687127229,21.601303231647705,21.3624028393291,21.121384548815321,20.878121136405678,20.632488587281308,20.384368899708292,20.133653127878553,19.880244525139769,19.62406161080197,19.365040958315305,19.1031394977534,18.838336146062353,18.570632624921643,18.300053393465234,18.026644701908154,17.750472849961806,17.471621798680214,17.190190327057955,16.906288941258765,16.620036736014271,16.33155837985716,16.040981356000618,15.748433546581994,15.454041206047759,15.157927333948955,14.860210430431733,14.561003599531579,14.260413955084633,13.958542280095605,13.655482891018288,13.351323662010538,13.046146169501947,12.740025923372031,12.433032657000675,12.125230654002795,11.816679094370109,11.507432406928615,11.197540618482304,10.887049692806368,10.576001854855779,10.264435897257099,9.9523874674398058,9.6398893347168979,9.3269716373139726,9.0136621098282443,8.6999862919238637,8.3859677192744524,8.0716280978806552,7.7569874629422468,7.4420643234702872,7.1268757937987939,6.811437713108532,6.4957647540147612,6.1798705212029752,5.8637676410254151,5.5474678428991879,5.5474678428991879,11.045956870889256,11.258827410001469,11.47189486706235,11.685170971489004,11.898668349633667,12.112400606181852,12.326382413748799,12.540629611515273,12.755159313815312,12.969990029659948,13.185141794248977,13.400636313583044,13.616497123335764,13.832749763171265,14.049421967686804,14.266543875107951,14.484148254747712,14.702270754035556,14.920950165598068,15.140228714390197,15.360152364187137,15.580771141792898,15.802139476033451,16.024316546900536,16.247366638009069,16.471359482738926,16.6963705909696,16.922481539130732,17.149780201380143,17.378360894171635,17.608324400509918,17.839777834231143,18.072834299370779,18.307612296074986,18.544234823894801,18.782828137276692,19.023520118358029,19.266438250351975,19.511707201791225,19.759446067407406,20.009765353364255,20.262763838656348,20.518525484337708,20.777116590119732,21.038583406217469,21.302950391764863,21.570219268441392,21.840368953193174,22.113356376093808,22.389118110593472,22.667572676002173,22.94862332566759,23.232161113781668,23.518068038610458,23.80622008533512,24.096490030254962,24.388749912013871,24.682873118104546,24.978736071563088,25.276219531088014,25.575209537280109,25.875598049088648,26.177283319362544,26.480170058370238,26.78416943090329,27.089198927482158,27.395182144275207,27.702048500346429,28.009732915216485,28.318175464706577,28.627321028738329,28.93711894119463,29.247522649058087,29.558489385757866,29.869979861884165,30.181957975084586,30.494390539957195,30.807247038030333,31.120499387408795,31.434121731320623,26.963759624304608],"text":["wt: 1.513000<br />mpg: 29.198941","wt: 1.562506<br />mpg: 28.934356","wt: 1.612013<br />mpg: 28.669770","wt: 1.661519<br />mpg: 28.405185","wt: 1.711025<br />mpg: 28.140600","wt: 1.760532<br />mpg: 27.876015","wt: 1.810038<br />mpg: 27.611430","wt: 1.859544<br />mpg: 27.346844","wt: 1.909051<br />mpg: 27.082259","wt: 1.958557<br />mpg: 26.817674","wt: 2.008063<br />mpg: 26.553089","wt: 2.057570<br />mpg: 26.288504","wt: 2.107076<br />mpg: 26.023919","wt: 2.156582<br />mpg: 25.759333","wt: 2.206089<br />mpg: 25.494748","wt: 2.255595<br />mpg: 25.230163","wt: 2.305101<br />mpg: 24.965578","wt: 2.354608<br />mpg: 24.700993","wt: 2.404114<br />mpg: 24.436408","wt: 2.453620<br />mpg: 24.171822","wt: 2.503127<br />mpg: 23.907237","wt: 2.552633<br />mpg: 23.642652","wt: 2.602139<br />mpg: 23.378067","wt: 2.651646<br />mpg: 23.113482","wt: 2.701152<br />mpg: 22.848897","wt: 2.750658<br />mpg: 22.584311","wt: 2.800165<br />mpg: 22.319726","wt: 2.849671<br />mpg: 22.055141","wt: 2.899177<br />mpg: 21.790556","wt: 2.948684<br />mpg: 21.525971","wt: 2.998190<br />mpg: 21.261386","wt: 3.047696<br />mpg: 20.996800","wt: 3.097203<br />mpg: 20.732215","wt: 3.146709<br />mpg: 20.467630","wt: 3.196215<br />mpg: 20.203045","wt: 3.245722<br />mpg: 19.938460","wt: 3.295228<br />mpg: 19.673875","wt: 3.344734<br />mpg: 19.409289","wt: 3.394241<br />mpg: 19.144704","wt: 3.443747<br />mpg: 18.880119","wt: 3.493253<br />mpg: 18.615534","wt: 3.542759<br />mpg: 18.350949","wt: 3.592266<br />mpg: 18.086364","wt: 3.641772<br />mpg: 17.821778","wt: 3.691278<br />mpg: 17.557193","wt: 3.740785<br />mpg: 17.292608","wt: 3.790291<br />mpg: 17.028023","wt: 3.839797<br />mpg: 16.763438","wt: 3.889304<br />mpg: 16.498853","wt: 3.938810<br />mpg: 16.234267","wt: 3.988316<br />mpg: 15.969682","wt: 4.037823<br />mpg: 15.705097","wt: 4.087329<br />mpg: 15.440512","wt: 4.136835<br />mpg: 15.175927","wt: 4.186342<br />mpg: 14.911342","wt: 4.235848<br />mpg: 14.646756","wt: 4.285354<br />mpg: 14.382171","wt: 4.334861<br />mpg: 14.117586","wt: 4.384367<br />mpg: 13.853001","wt: 4.433873<br />mpg: 13.588416","wt: 4.483380<br />mpg: 13.323831","wt: 4.532886<br />mpg: 13.059245","wt: 4.582392<br />mpg: 12.794660","wt: 4.631899<br />mpg: 12.530075","wt: 4.681405<br />mpg: 12.265490","wt: 4.730911<br />mpg: 12.000905","wt: 4.780418<br />mpg: 11.736320","wt: 4.829924<br />mpg: 11.471734","wt: 4.879430<br />mpg: 11.207149","wt: 4.928937<br />mpg: 10.942564","wt: 4.978443<br />mpg: 10.677979","wt: 5.027949<br />mpg: 10.413394","wt: 5.077456<br />mpg: 10.148809","wt: 5.126962<br />mpg:  9.884223","wt: 5.176468<br />mpg:  9.619638","wt: 5.225975<br />mpg:  9.355053","wt: 5.275481<br />mpg:  9.090468","wt: 5.324987<br />mpg:  8.825883","wt: 5.374494<br />mpg:  8.561298","wt: 5.424000<br />mpg:  8.296712","wt: 5.424000<br />mpg:  8.296712","wt: 5.424000<br />mpg:  8.296712","wt: 5.374494<br />mpg:  8.561298","wt: 5.324987<br />mpg:  8.825883","wt: 5.275481<br />mpg:  9.090468","wt: 5.225975<br />mpg:  9.355053","wt: 5.176468<br />mpg:  9.619638","wt: 5.126962<br />mpg:  9.884223","wt: 5.077456<br />mpg: 10.148809","wt: 5.027949<br />mpg: 10.413394","wt: 4.978443<br />mpg: 10.677979","wt: 4.928937<br />mpg: 10.942564","wt: 4.879430<br />mpg: 11.207149","wt: 4.829924<br />mpg: 11.471734","wt: 4.780418<br />mpg: 11.736320","wt: 4.730911<br />mpg: 12.000905","wt: 4.681405<br />mpg: 12.265490","wt: 4.631899<br />mpg: 12.530075","wt: 4.582392<br />mpg: 12.794660","wt: 4.532886<br />mpg: 13.059245","wt: 4.483380<br />mpg: 13.323831","wt: 4.433873<br />mpg: 13.588416","wt: 4.384367<br />mpg: 13.853001","wt: 4.334861<br />mpg: 14.117586","wt: 4.285354<br />mpg: 14.382171","wt: 4.235848<br />mpg: 14.646756","wt: 4.186342<br />mpg: 14.911342","wt: 4.136835<br />mpg: 15.175927","wt: 4.087329<br />mpg: 15.440512","wt: 4.037823<br />mpg: 15.705097","wt: 3.988316<br />mpg: 15.969682","wt: 3.938810<br />mpg: 16.234267","wt: 3.889304<br />mpg: 16.498853","wt: 3.839797<br />mpg: 16.763438","wt: 3.790291<br />mpg: 17.028023","wt: 3.740785<br />mpg: 17.292608","wt: 3.691278<br />mpg: 17.557193","wt: 3.641772<br />mpg: 17.821778","wt: 3.592266<br />mpg: 18.086364","wt: 3.542759<br />mpg: 18.350949","wt: 3.493253<br />mpg: 18.615534","wt: 3.443747<br />mpg: 18.880119","wt: 3.394241<br />mpg: 19.144704","wt: 3.344734<br />mpg: 19.409289","wt: 3.295228<br />mpg: 19.673875","wt: 3.245722<br />mpg: 19.938460","wt: 3.196215<br />mpg: 20.203045","wt: 3.146709<br />mpg: 20.467630","wt: 3.097203<br />mpg: 20.732215","wt: 3.047696<br />mpg: 20.996800","wt: 2.998190<br />mpg: 21.261386","wt: 2.948684<br />mpg: 21.525971","wt: 2.899177<br />mpg: 21.790556","wt: 2.849671<br />mpg: 22.055141","wt: 2.800165<br />mpg: 22.319726","wt: 2.750658<br />mpg: 22.584311","wt: 2.701152<br />mpg: 22.848897","wt: 2.651646<br />mpg: 23.113482","wt: 2.602139<br />mpg: 23.378067","wt: 2.552633<br />mpg: 23.642652","wt: 2.503127<br />mpg: 23.907237","wt: 2.453620<br />mpg: 24.171822","wt: 2.404114<br />mpg: 24.436408","wt: 2.354608<br />mpg: 24.700993","wt: 2.305101<br />mpg: 24.965578","wt: 2.255595<br />mpg: 25.230163","wt: 2.206089<br />mpg: 25.494748","wt: 2.156582<br />mpg: 25.759333","wt: 2.107076<br />mpg: 26.023919","wt: 2.057570<br />mpg: 26.288504","wt: 2.008063<br />mpg: 26.553089","wt: 1.958557<br />mpg: 26.817674","wt: 1.909051<br />mpg: 27.082259","wt: 1.859544<br />mpg: 27.346844","wt: 1.810038<br />mpg: 27.611430","wt: 1.760532<br />mpg: 27.876015","wt: 1.711025<br />mpg: 28.140600","wt: 1.661519<br />mpg: 28.405185","wt: 1.612013<br />mpg: 28.669770","wt: 1.562506<br />mpg: 28.934356","wt: 1.513000<br />mpg: 29.198941","wt: 1.513000<br />mpg: 29.198941"],"type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"transparent","dash":"solid"},"fill":"toself","fillcolor":"rgba(153,153,153,0.4)","hoveron":"points","hoverinfo":"x+y","showlegend":false,"xaxis":"x","yaxis":"y","frame":null}],"layout":{"margin":{"t":27.872146118721464,"r":7.3059360730593621,"b":41.82648401826485,"l":37.260273972602747},"plot_bgcolor":"rgba(235,235,235,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.3174499999999998,5.6195500000000003],"tickmode":"array","ticktext":["2","3","4","5"],"tickvals":[2,3,4,5],"categoryorder":"array","categoryarray":["2","3","4","5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716894984},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"wt","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[4.1298412350441476,35.31762660785504],"tickmode":"array","ticktext":["10","20","30"],"tickvals":[10,20.000000000000004,30],"categoryorder":"array","categoryarray":["10","20","30"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"mpg","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716894984}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"46604998393e":{"x":{},"y":{},"type":"scatter"},"466049c76cb1":{"x":{},"y":{}}},"cur_data":"46604998393e","visdat":{"46604998393e":["function (y) ","x"],"466049c76cb1":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<p>With Plotly, users can interact with the plot to gain deeper insights.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Effective data visualization is crucial in regression analysis. It aids in understanding the data, diagnosing the model, and communicating results. R, with its robust packages like ggplot2 and Plotly, offers a wide array of tools for creating meaningful and insightful visualizations.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom"></div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>

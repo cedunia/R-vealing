@@ -155,7 +155,7 @@ In summary:
 - The predictors `Advertising` and `Seasonality` do not seem to be significant predictors of `Sales` in this model. The model, as it stands, might not be a good fit for the data.
 - Further exploration might be needed, perhaps considering other variables or looking into potential non-linear relationships or interactions.
 
-We'll come back to this model in another post to see if we can't improve it. Let's move on and assume this omdel is adequate to fit data.
+We'll come back to this model in another post to see if we can't improve it. Let's move on and assume this model is adequate to fit data.
 
 ## Predicting Sales
 
