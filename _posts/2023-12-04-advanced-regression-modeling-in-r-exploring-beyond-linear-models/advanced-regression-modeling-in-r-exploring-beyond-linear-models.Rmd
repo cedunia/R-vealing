@@ -1,0 +1,178 @@
+---
+title: "Advanced Regression Modeling in R: Exploring Beyond Linear Models"
+description: |
+  This post delves into advanced regression techniques in R, offering insights into polynomial regression, logistic regression, and generalized linear models. It aims to provide a comprehensive guide for analysts and data scientists looking to extend their modeling capabilities beyond traditional linear regression.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2023-12-04
+categories: 
+  - [Advanced regression]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+list.of.packages <- c("ggplot2", "plotly")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+## Introduction
+
+Linear regression is a powerful tool, but often, real-world data require more sophisticated models. This post explores advanced regression techniques in R, including polynomial regression, logistic regression, and generalized linear models (GLMs), to tackle diverse data challenges.
+
+## Polynomial Regression
+
+### Understanding Polynomial Regression
+
+Polynomial regression allows us to model relationships that are not linear. It's particularly useful for capturing curvatures in data.
+
+```{r poly_regression, echo=TRUE}
+library(ggplot2)
+data(mtcars)
+
+# Fitting a polynomial regression model
+poly_model <- lm(mpg ~ poly(wt, 2), data=mtcars)
+
+# Plotting
+ggplot(mtcars, aes(x=wt, y=mpg)) +
+  geom_point() +
+  geom_smooth(method="lm", formula=y ~ poly(x, 2), se=FALSE) +
+  labs(title="Polynomial Regression Example", x="Weight", y="Miles per Gallon")
+
+#Result
+poly_model
+```
+
+#### Interpreting the Polynomial Regression
+
+1. **(Intercept) - 20.091:** This is the intercept term of the model. It represents the predicted value of `mpg` (miles per gallon) when the model's variables are at their mean values. In this case, it indicates the predicted average value of `mpg` when the weight (`wt`) is at its mean.
+
+2. **poly(wt, 2)1 - -29.116:** This coefficient represents the linear effect of weight on `mpg`. The fact that it is negative (-29.116) suggests that an increase in the car's weight is generally associated with a decrease in fuel efficiency (fewer miles per gallon). The value of this coefficient indicates the magnitude of this effect.
+
+3. **poly(wt, 2)2 - 8.636:** This coefficient represents the quadratic term in the relationship between weight and `mpg`. A positive coefficient (8.636) for this quadratic term suggests that the relationship between weight and `mpg` is not simply linear but exhibits curvature. This could mean, for example, that for very light or very heavy weights, the effect of weight on `mpg` changes differently compared to average weights.
+
+In summary, these results indicate that `mpg` decreases with increasing weight, but not at a constant linear rate. The decrease in `mpg` is more pronounced for certain ranges of weight than for others. Therefore, this model is better suited to capture the nonlinear relationship between the weight of cars and their fuel efficiency compared to a simple linear model.
+
+## Logistic Regression
+
+### Exploring Logistic Regression
+
+Logistic regression is used for binary classification problems. It predicts the probability of a binary outcome.
+
+### Hypothetical Dataset for Logistic Regression Example
+
+Imagine a dataset representing the likelihood of customers subscribing to a new service based on various factors:
+
+- **Variables (Columns):**
+  - `age`: Age of the customer (numeric).
+  - `income`: Annual income of the customer (numeric).
+  - `account_years`: Number of years the customer has held an account with the company (numeric).
+  - `has_referral`: Whether the customer signed up through a referral (binary: 1 for "yes", 0 for "no").
+  - `is_subscriber`: Whether the customer subscribed to the service (binary: 1 for "yes", 0 for "no").
+
+```{r logistic_regression, echo=TRUE}
+# generate seed
+set.seed(0)
+
+# Artificial dataset
+age <- sample(18:70, 100, replace = TRUE)
+income <- sample(30000:100000, 100, replace = TRUE)
+account_years <- sample(1:30, 100, replace = TRUE)
+has_referral <- sample(0:1, 100, replace = TRUE)
+is_subscriber <- sample(0:1, 100, replace = TRUE)
+
+# create dataframe
+customer_data <- data.frame(age, income, account_years, has_referral, is_subscriber)
+
+# display dataframe
+head(customer_data)
+
+# Fitting a logistic regression model
+logistic_model <- glm(is_subscriber ~ age + income + account_years + has_referral, 
+                      data=customer_data, family="binomial")
+
+# Summary
+summary(logistic_model)
+```
+
+#### Interpreting the Logistic Regression
+
+The output of the logistic regression model fitted to the `customer_data` dataset can be interpreted as follows:
+
+1. **Coefficients:**
+   - **(Intercept) -1.324e+00:** This is the intercept term. It represents the log odds of a customer being a subscriber when all other predictor variables are at their average values. The negative sign indicates that, at the mean values of the predictors, the log odds of being a subscriber are negative, suggesting a lower probability of subscription.
+   - **age 1.523e-02:** This coefficient for `age` indicates that for each additional year in age, the log odds of being a subscriber increase by 0.01523. However, this effect is not statistically significant (p = 0.297), suggesting that age might not be a strong predictor of subscription in this model.
+   - **income 9.608e-06:** The coefficient for `income` suggests a very small positive effect on the log odds of being a subscriber. For every additional unit increase in income, the log odds increase by approximately 0.000009608. This effect is also not statistically significant (p = 0.334).
+   - **account_years -8.548e-03:** This coefficient indicates that each additional year of having an account decreases the log odds of being a subscriber by 0.008548. Again, this is not statistically significant (p = 0.715).
+   - **has_referral 2.547e-01:** The positive coefficient for `has_referral` suggests that having a referral is associated with an increase in the log odds of being a subscriber. The magnitude of this increase is 0.2547, but this is not statistically significant (p = 0.535).
+
+2. **Model Fit and Significance:**
+   - The p-values for all predictors are above the common significance level (0.05), indicating that none of the predictors have a statistically significant effect on the likelihood of being a subscriber in this model.
+   - The AIC (Akaike Information Criterion) of the model is 146.06, which can be used for model comparison purposes.
+
+3. **Overall Interpretation:**
+   - This particular model does not provide strong evidence to suggest that any of the included predictors (age, income, account years, referral status) significantly influence the likelihood of a customer being a subscriber.
+   - The lack of significant predictors may indicate that other factors not included in the model might be more influential, or that the relationships are not captured well by a logistic regression model in this case.
+   - The model's predictive power and its usefulness should be further evaluated using other metrics like confusion matrix, ROC curve, etc.
+
+## Generalized Linear Models (GLMs)
+
+### Utilizing GLMs in R
+
+GLMs extend linear models to support non-normal distributions, making them suitable for a range of data types.
+
+
+```{r glm_example, echo=TRUE}
+# generate the seed 
+set.seed(0)
+
+# Artificial dataset
+exposure <- sample(1:10, 100, replace = TRUE)
+group <- sample(c("A", "B"), 100, replace = TRUE)
+
+# dependent variable
+rate <- rpois(100, lambda = exposure * ifelse(group == "A", 0.5, 1))
+
+# create dataframe by combine variable
+poisson_data <- data.frame(group, exposure, rate)
+
+# display dataframe
+head(poisson_data)
+
+# Fitting a GLM
+poisson_glm <- glm(rate ~ exposure + group, family = poisson(), data = poisson_data)
+
+# Summary
+summary(poisson_glm)
+```
+
+#### Interpreting the GLM
+
+The output from fitting a Poisson GLM to the `poisson_data` dataset can be interpreted as follows:
+
+1. **Coefficients:**
+   - **(Intercept) -0.31936:** This intercept term represents the log rate of the outcome (in this case, `rate`) when all predictor variables are at zero. Since `exposure` cannot be zero in practical scenarios, the interpretation of the intercept is more theoretical in this context.
+   - **exposure 0.20923:** The coefficient for `exposure` is positive and highly significant (p < 2e-16). This suggests that with each unit increase in `exposure`, the log rate of `rate` increases by 0.20923. In practical terms, higher exposure leads to an increase in the rate of the event or count being modeled.
+   - **groupB 0.67281:** The positive and significant coefficient for `groupB` (p = 1.61e-11) indicates that being in group B, as opposed to group A, is associated with an increase in the log rate of `rate` by 0.67281. This suggests that the rate of the event or count is higher for group B than for group A.
+
+2. **Model Fit and Significance:**
+   - The significance codes indicate that both `exposure` and `groupB` are highly significant predictors in this model.
+   - The null deviance and residual deviance can be used to assess the model fit. A lower residual deviance compared to the null deviance suggests that the model explains a significant portion of the variability in the data.
+   - The Akaike Information Criterion (AIC) of 418.79 can be used for comparing this model with other models.
+
+3. **Overall Interpretation:**
+   - The model suggests that both the level of exposure and the categorical group membership (group A vs. B) significantly influence the rate of the event or count being modeled.
+   - The positive coefficients for both `exposure` and `groupB` indicate that increases in these predictors are associated with increases in the event rate.
+   - Since the dispersion parameter is taken to be 1, it is assumed that the mean and variance of the response variable (`rate`) are equal, as is typical for a Poisson distribution. However, it's always good practice to check this assumption.
+
+In summary, the Poisson GLM provides valuable insights into the factors affecting the rate of occurrences in the dataset, with both exposure and group category playing significant roles.
+
+
+## Conclusion
+
+Advanced regression techniques in R open up a world of possibilities for data analysis. They allow us to model complex relationships and make more accurate predictions.
