@@ -87,6 +87,24 @@ The enhanced plot provides a clearer visualization of the regression line and da
 
 Analyzing residuals is key to understanding the performance of a regression model.
 
+```{r residuals, echo=TRUE}
+model <- lm(mpg ~ wt, data=mtcars)
+residuals_plot <- ggplot(model, aes(.fitted, .resid)) +
+  geom_point() +
+  geom_hline(yintercept=0, linetype="dashed") +
+  labs(title="Residual Plot", x="Fitted Values", y="Residuals")
+residuals_plot
+```
+
+
+The residual plot helps to diagnose issues with the model, like non-linearity or heteroscedasticity.
+
+### Checking for Normality of Residuals
+
+
+It's important to check if the residuals from our regression model are normally distributed. This can be done using a QQ plot.
+
+
 ```{r residuals_qqplot_enhanced, echo=TRUE}
 library(ggplot2)
 
@@ -107,17 +125,6 @@ ggplot(residuals_data, aes(x = Theoretical, y = Residuals)) +
   scale_color_manual(values = c("black", "red")) +
   theme_minimal() +
   labs(title="Enhanced QQ Plot for Residuals", x="Theoretical Quantiles", y="Sample Quantiles")
-```
-
-The residual plot helps to diagnose issues with the model, like non-linearity or heteroscedasticity.
-
-### Checking for Normality of Residuals
-
-
-It's important to check if the residuals from our regression model are normally distributed. This can be done using a QQ plot.
-
-```{r residuals_qqplot, echo=TRUE}
-
 ```
 
 ## Interactive Visualizations with Plotly
