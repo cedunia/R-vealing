@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://cedunia.github.io/R-vealing/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/index.html</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/about.html</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-12-18-time-series-analysis-and-forecasting-with-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-12-04-advanced-regression-modeling-in-r-exploring-beyond-linear-models/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-11-27-data-visualization-in-r-enhancing-your-regression-analysis/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-10-27-linear-regression-analysis-with-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-10-20-data-visualization-with-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-09-29-transforming-and-manipulating-data-in-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-09-22-describing-data-in-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-09-15-importing-data-into-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/2023-08-10-managing-data-in-r/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cedunia.github.io/R-vealing/posts/welcome/</loc>
+  <lastmod>2023-12-18T16:44:21+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
