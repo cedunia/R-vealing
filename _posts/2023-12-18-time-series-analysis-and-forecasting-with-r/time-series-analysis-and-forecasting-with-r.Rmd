@@ -41,7 +41,7 @@ data(AirPassengers)
 
 ### Visualizing Time Series Data
 
-```{r plot_data}
+```{r plot_data, echo=TRUE}
 plot(AirPassengers, main="Monthly Airline Passenger Numbers 1949-1960",
      ylab="Passenger Numbers", xlab="Year")
 ```
@@ -64,7 +64,7 @@ In summary, the plot illustrates an increasing trend in airline passenger number
 
 ARIMA (AutoRegressive Integrated Moving Average) models are commonly used in time series forecasting.
 
-```{r arima_model}
+```{r arima_model,echo=TRUE}
 # Fitting an ARIMA model
 fit <- auto.arima(AirPassengers)
 summary(fit)
@@ -95,7 +95,7 @@ The general interpretation is that this ARIMA model is suitable for capturing tr
 
 Let's simulate a dataset for product demand forecasting. This dataset represents monthly product sales over several years.
 
-```{r case_study_data_prep}
+```{r case_study_data_prep , echo=TRUE}
 set.seed(123)
 dates <- seq(as.Date("2015-01-01"), by = "month", length.out = 60)
 sales <- round(runif(60, min=100, max=500), 0)
@@ -125,7 +125,7 @@ In summary, the plot provides an overview of sales performance over time and sug
 
 ### Building and Evaluating the Forecasting Model
 
-```{r case_study_model}
+```{r case_study_model, echo=TRUE}
 # Fitting a time series model to the product demand data
 demand_model <- auto.arima(product_demand_ts)
 forecast_demand <- forecast(demand_model, h=12)
