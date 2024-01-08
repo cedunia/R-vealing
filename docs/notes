@@ -1,6 +1,0 @@
-Pour ajouter un post
-- Ajouter dans _posts le fichier Rmd en suivant la nomenclature
-- Faire le knit sur le fichier Rmd.
-- git status et git add pour ajouter les modifications
-- git commit et push pour importer les fichiers dans le github
-- Verifier https://cedunia.github.io/R-vealing/ l'ajout du post.
