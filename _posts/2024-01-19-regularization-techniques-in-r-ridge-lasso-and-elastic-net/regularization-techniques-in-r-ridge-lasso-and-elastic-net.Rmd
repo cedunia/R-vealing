@@ -1,0 +1,183 @@
+---
+title: "Regularization Techniques in R: Ridge, Lasso, and Elastic Net"
+description: |
+  Learn how to implement Ridge, Lasso, and Elastic Net regularization techniques in R to enhance your regression models and prevent overfitting.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-01-19
+categories: 
+  - [Regularization]
+  - [Regression]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+list.of.packages <- c("glmnet", "caret", "elasticnet")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(glmnet)
+library(caret)
+library(elasticnet)
+```
+
+## Introduction
+
+Regularization techniques are essential to refine machine learning models, particularly in regression analysis. They help to prevent overfitting, improve model generalization, and handle multicollinearity. This post introduces three widely-used regularization methods: Ridge, Lasso, and Elastic Net.
+
+## Ridge Regression (L2 Regularization)
+
+Ridge regression, also known as L2 regularization, penalizes the sum of squared coefficients, effectively shrinking them towards zero.
+
+### Implementing Ridge Regression
+
+```{r load_data}
+set.seed(42) # Pour la reproductibilité
+
+# Nombre d'observations
+n <- 100
+
+# Génération de données aléatoires pour les variables explicatives
+# Feature 1 : Budget marketing (en milliers d'euros)
+# Feature 2 : Prix des concurrents (en euros)
+# Feature 3 : Saison (0 pour l'hiver, 1 pour l'été)
+X_train <- data.frame(
+  Marketing_Budget = runif(n, 20, 100),
+  Competitor_Price = runif(n, 10, 50),
+  Season = sample(0:1, n, replace = TRUE)
+)
+
+# Génération de la variable réponse (Ventes)
+# Les ventes sont influencées par les trois variables, avec du bruit ajouté
+y_train <- with(X_train, 
+                5 * Marketing_Budget + 
+                -3 * Competitor_Price +
+                10 * Season +
+                rnorm(n, mean = 0, sd = 10))
+
+# Affichage des premières lignes de X_train et y_train
+head(X_train)
+head(y_train)
+
+
+# Convertir en matrice si X_train est un data.frame
+if(is.data.frame(X_train)) {
+  X_train <- as.matrix(X_train)
+}
+
+# Assurez-vous que y_train est un vecteur
+if(!is.vector(y_train) || is.list(y_train)) {
+  y_train <- unlist(y_train)
+}
+
+# Assuming 'X_train' and 'y_train' are the training data
+ridge_mod <- glmnet(X_train, y_train, alpha = 0, lambda = seq(0.1, 2, by = 0.1))
+ridge_mod
+# Cross-validation to find the optimal lambda
+cv_ridge <- cv.glmnet(X_train, y_train, alpha = 0)
+cv_ridge
+best_lambda_ridge <- cv_ridge$lambda.min
+best_lambda_ridge
+```
+
+### Interpreting Ridge Regression
+
+Based on the information provided for your Ridge model using simulated product sales data, here's an interpretation of the results. These data include three features: marketing budget, competitor prices, and season (winter = 0, summer = 1).
+
+1. **Results from the Ridge Model (`ridge_mod`):**
+   - The model was fitted with various lambda values (from 0.1 to 2.0). The consistent `Df` count (number of variables used) being 3 for all lambda values indicates that all variables (marketing budget, competitor prices, season) remain significant in the model across the entire range of tested lambda values.
+   - The percentage of deviance explained (`%Dev`) remains stable and high (around 99.45% to 99.47%) across all lambda values, suggesting that the model explains a large portion of the variance in the sales data, regardless of the penalization degree.
+
+2. **Results from Cross-Validation (`cv_ridge`):**
+   - Cross-validation was used to find the optimal lambda, i.e., the one that minimizes the mean squared error (MSE). The `lambda.min` found is approximately 12.17.
+   - The `1se` value (around 13.36) being close to `lambda.min` indicates that you can achieve similar performance with a slightly simpler model (i.e., with a slightly higher degree of penalization).
+
+**Interpretation:**
+
+- The optimal lambda value (around 12.17) suggests that the model is penalized enough to avoid overfitting while retaining the ability to capture significant relationships between the features of the sales data and the response.
+- The fact that all features are retained in the model across the entire range of tested lambda values suggests that each contributes significantly to the prediction of sales.
+- The analysis indicates that sales are likely influenced by marketing budget, competitor prices, and seasonality, and these factors remain relevant even when regularization is applied to control model complexity.
+
+In summary, your Ridge model is well-suited to analyze the impact of marketing budget, competitor prices, and seasonality on product sales, offering a balance between prediction accuracy and preventing overfitting. Ridge regression is best when we expect all the input features to have an effect on the output and when multicollinearity is present among the features.
+
+## Lasso Regression (L1 Regularization)
+
+Lasso regression, or L1 regularization, penalizes the sum of absolute values of the coefficients, leading to some coefficients being exactly zero.
+
+### Implementing Lasso Regression
+
+```{r lasso_example}
+lasso_mod <- glmnet(X_train, y_train, alpha = 1, lambda = seq(0.1, 2, by = 0.1))
+lasso_mod
+# Cross-validation to find the optimal lambda
+cv_lasso <- cv.glmnet(X_train, y_train, alpha = 1)
+cv_lasso
+best_lambda_lasso <- cv_lasso$lambda.min
+best_lambda_lasso
+```
+
+### Interpreting Lasso Regression
+
+1. **Results from Lasso Model Fitting (`lasso_mod`):**
+   - A Lasso regression model (`alpha = 1`) was fitted to your product sales data (`X_train` and `y_train`) with a range of lambda values from 0.1 to 2.0. In Lasso regression, lambda controls the strength of the L1 penalty, which can shrink some coefficients to zero.
+   - Across all lambda values, the model consistently used 3 predictors (`Df`), indicating that all three features were kept in the model.
+   - The `%Dev` (percentage of deviance explained) remains high (about 99.40% to 99.47%) across the range of lambda values, suggesting the model explains a large part of the variance in the sales data.
+
+2. **Results from Cross-Validation (`cv_lasso`):**
+   - Cross-validation was performed to determine the optimal lambda, which minimizes the mean squared error (MSE).
+   - The `min` lambda value (0.5029) is the value that resulted in the lowest MSE, and the `1se` lambda value (2.2283) is the largest lambda that is within one standard error of the minimum MSE.
+   - `best_lambda_lasso` is approximately 0.5029368, indicating the optimal degree of penalization for the Lasso model.
+
+**Interpreting the Results:**
+
+- The optimal lambda value for the Lasso model (`best_lambda_lasso` ~ 0.5029) suggests an effective level of penalization that balances model complexity and predictive accuracy. This lambda value indicates that the model is sufficiently penalized to reduce overfitting but still retains all three predictors.
+- The fact that all features are retained in the model (non-zero `Df` count) across all lambda values suggests that each of the three features (marketing budget, competitor prices, season) is considered significant by the Lasso model in predicting sales.
+- The high percentage of deviance explained indicates that the Lasso model, even with penalization, effectively captures the variance in the sales data.
+
+In summary, the Lasso regression model with the selected lambda value performs well for your dataset. It balances model simplicity and predictive power, ensuring that the model is not overly complex while still capturing key relationships in the sales data. Lasso can be particularly useful for feature selection as it tends to zero out the less important features' coefficients.
+
+## Elastic Net Regression
+
+Elastic Net combines L1 and L2 regularization and is useful when there are multiple correlated predictors.
+
+### Implementing Elastic Net Regression
+
+```{r elasticnet_example}
+elastic_net_mod <- glmnet(X_train, y_train, alpha = 0.5, lambda = seq(0.1, 2, by = 0.1))
+elastic_net_mod
+# Cross-validation to find the optimal lambda
+cv_elastic_net <- cv.glmnet(X_train, y_train, alpha = 0.5)
+cv_elastic_net
+best_lambda_elastic_net <- cv_elastic_net$lambda.min
+best_lambda_elastic_net
+```
+
+### Interpreting Elastic Net Regression
+
+1. **Results from Elastic Net Model Fitting (`elastic_net_mod`):**
+   - An Elastic Net regression model (`alpha = 0.5`) was fitted to your product sales data (`X_train` and `y_train`) with a range of lambda values from 0.1 to 2.0. In Elastic Net, `alpha = 0.5` indicates a balanced mix of L1 (Lasso) and L2 (Ridge) penalizations.
+   - Across all lambda values, the model consistently used 3 predictors (`Df`), indicating that all three features (marketing budget, competitor prices, season) were retained in the model.
+   - The `%Dev` (percentage of deviance explained) remains high (about 99.43% to 99.47%) across the range of lambda values, suggesting that the model explains a significant portion of the variance in the sales data.
+
+2. **Results from Cross-Validation (`cv_elastic_net`):**
+   - Cross-validation was performed to determine the optimal lambda, minimizing the mean squared error (MSE).
+   - The `min` lambda value (0.6933) is the value that resulted in the lowest MSE, and the `1se` lambda value (2.7989) is the largest lambda within one standard error of the minimum MSE.
+   - `best_lambda_elastic_net` is approximately 0.6933097, indicating the optimal degree of penalization for the Elastic Net model.
+
+**Interpreting the Results:**
+
+- The optimal lambda value for the Elastic Net model (`best_lambda_elastic_net` ~ 0.6933) suggests an effective level of combined L1 and L2 penalization. This value indicates a balance between reducing overfitting (like Ridge) and performing feature selection (like Lasso).
+- The fact that all features are retained in the model across all lambda values suggests that each of the three features is considered significant by the Elastic Net model in predicting sales.
+- The high percentage of deviance explained across all lambda values indicates that, despite the penalization, the Elastic Net model effectively captures the variance in the sales data.
+
+In summary, the Elastic Net regression model with the selected lambda value performs well for your dataset. It offers a balanced approach, incorporating the strengths of both Lasso and Ridge, ensuring that the model is not overly complex while still capturing key relationships in the sales data.
+
+
+## Conclusion
+
+Ridge, Lasso, and Elastic Net are powerful regularization techniques to improve the performance of regression models. Choosing the right technique depends on the specific data characteristics and the problem at hand.
