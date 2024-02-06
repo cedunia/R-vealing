@@ -1,0 +1,134 @@
+---
+title: "Multivariate Regression with R: A Deeper Dive into Sales Prediction"
+description: |
+  Explore multivariate regression techniques in R, focusing on modeling the impact of multiple independent variables on sales. Delve into handling multicollinearity, interpreting complex models, and improving prediction accuracy.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-02-05
+categories: 
+  - [Multivariate Regression]
+  - [Sales Prediction]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+list.of.packages <- c("glmnet", "caret", "fastDummies")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+library(glmnet)
+library(caret)
+```
+
+## Introduction
+
+Multivariate regression is a powerful tool in predictive modeling, especially in the field of sales prediction. By considering multiple independent variables, this approach allows us to understand and predict the complex interactions that influence sales outcomes.
+
+
+## The Basics of Multivariate Regression in R
+
+```{r load_data}
+set.seed(123) # Pour la reproductibilité
+
+n <- 100
+
+# generate data
+Sales <- rnorm(n, mean=200, sd=20) # Ventes, distribuées normalement
+Marketing_Budget <- runif(n, min=1000, max=5000) # Budget marketing, distribué uniformément
+Competitor_Price <- rnorm(n, mean=15, sd=5) # Prix des concurrents, distribué normalement
+
+# Season categorial var
+Season <- sample(c("Spring", "Summer", "Fall", "Winter"), n, replace = TRUE)
+
+# Create dataframe
+data <- data.frame(Sales, Marketing_Budget, Competitor_Price, Season)
+
+# Display first lines
+head(data)
+
+
+```
+
+## Building a Multivariate Regression Model
+
+```{r model_building}
+# Splitting data into training and test sets
+set.seed(123)
+training_index <- createDataPartition(data$Sales, p = 0.8, list = FALSE)
+training_data <- data[training_index, ]
+test_data <- data[-training_index, ]
+
+# Building the model
+model <- lm(Sales ~ Marketing_Budget + Competitor_Price + Season, data = training_data)
+summary(model)
+```
+
+### Interpreting the Model
+
+Interpreting a multivariate regression model requires understanding the impact and significance of each variable. Coefficients indicate the direction and magnitude of the impact on sales.
+Here's an interpretation of the linear regression results from R in English:
+
+- **Formula**: The model `Sales ~ Marketing_Budget + Competitor_Price + Season` uses sales as the dependent variable, influenced by the marketing budget, competitor's price, and the season.
+
+- **Residuals**: The residuals (differences between observed and predicted values) range from -46.651 to 40.656. The median is close to zero (-0.807), which suggests that the model is not systematically over or under-predicting.
+
+- **Coefficients**: 
+  - `Intercept` (2.081e+02) is the expected value of Sales when all other predictors are 0.
+  - `Marketing_Budget` has a coefficient of 9.158e-04, indicating a very small positive relationship with Sales, but it's not statistically significant (p-value: 0.636).
+  - `Competitor_Price` shows a negative relationship with Sales (-4.712e-01), but this is also not statistically significant (p-value: 0.334).
+  - `Season` is broken down into Spring, Summer, and Winter, compared to Fall (the baseline). None of the seasons show a statistically significant difference from Fall in terms of Sales.
+
+- **Significance Codes**: The asterisks denote the significance levels of the coefficients. None of the predictors have asterisks, indicating that none are statistically significant at common significance levels.
+
+- **Residual Standard Error**: The standard error of the residuals is 19.37, which indicates the average distance of the data points from the fitted line.
+
+- **R-squared values**:
+  - `Multiple R-squared` (0.0272) suggests that only about 2.72% of the variability in Sales is explained by the model.
+  - `Adjusted R-squared` (-0.03853) is adjusted for the number of predictors and can be negative if the model does not explain the variability in the data.
+
+- **F-statistic and p-value**: The F-statistic is 0.4138 and the corresponding p-value is 0.8378. This high p-value suggests that the model is not statistically significant; the observed relationship (or lack thereof) could very well be due to chance.
+
+In summary, this model does not seem to be a good fit for predicting Sales based on the given predictors, as indicated by the non-significant p-values, low R-squared values, and high p-value of the F-statistic.
+
+## Dealing with Multicollinearity
+
+Multicollinearity occurs when independent variables are highly correlated, which can skew results.
+
+```{r multicollinearity_check}
+# Select only numeric values
+numeric_data <- training_data[sapply(training_data, is.numeric)]
+
+# calculate cor matrix
+cor_matrix <- cor(numeric_data)
+
+cor_matrix
+```
+
+### Interpreting multicollinearity
+
+The correlation coefficients are quite low, indicating that multicollinearity is not a significant concern for this set of variables. This means that each variable provides unique and independent information to the model.
+
+## Improving Model Accuracy
+
+Model accuracy can be improved by feature engineering, model tuning, and using more complex models like Random Forest or Gradient Boosting if necessary.
+
+```{r model_improvement}
+# Using caret for model tuning
+train_control <- trainControl(method = "cv", number = 10)
+grid <- expand.grid(.mtry = 2:5)
+model_improved <- train(Sales ~., data = training_data, method = "rf", trControl = train_control, tuneGrid = grid)
+model_improved
+```
+
+### Interpreting Random Forest
+
+**Modest Improvement**: The Random Forest model does not show a significant improvement in terms of RMSE (Root Mean Square Error) compared to the basic linear regression model. In fact, it has a slightly higher RMSE, suggesting that it does not perform better than the base model for this metric.
+
+**Complexity vs Performance**: Random Forest is a more complex model than linear regression. Without a significant improvement in terms of RMSE or R² (R-squared), the increased complexity of the model may not be justified. This is particularly relevant when considering the trade-off between model complexity and the interpretability or computational efficiency.
+
+**Suitability of the Models**: These results suggest that neither simple linear regression nor the Random Forest model are particularly well-suited to your data, at least in terms of the explanatory variables used and their relationship with Sales. This implies that further exploration of different types of models, data transformations, or the inclusion of additional variables might be necessary to achieve better performance.
