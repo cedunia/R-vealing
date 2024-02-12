@@ -1,0 +1,161 @@
+---
+title: "Linear Discriminant Analysis (LDA) with R: A Practical Guide"
+description: |
+  Dive into Linear Discriminant Analysis (LDA) in R, a powerful technique for classification and dimensionality reduction. This post provides a step-by-step guide to implementing LDA, from data preparation to model evaluation, illustrated with a custom dataset for product category prediction.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-02-09
+categories: 
+  - [Classification]
+  - [Feature selection]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+list.of.packages <- c("MASS", "ggplot2", "caret")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+## Introduction
+
+Linear Discriminant Analysis (LDA) is a statistical approach for classification and dimensionality reduction. It projects features onto a lower-dimensional space while preserving class separability. This post explores LDA's application in R using a simulated dataset for product category prediction.
+
+## Generating a simulated dataset
+
+Let's create a synthetic dataset representing products with features that influence their classification into different categories.
+
+```{r load_data}
+set.seed(123)
+
+n <- 100
+
+
+marketing_spend_A <- rnorm(n/2, mean = 15000, sd = 2000)
+marketing_spend_B <- rnorm(n/2, mean = 10000, sd = 2000)
+average_price_A <- rnorm(n/2, mean = 35, sd = 5)
+average_price_B <- rnorm(n/2, mean = 20, sd = 5)
+
+season <- factor(rep(c("Winter", "Spring", "Summer", "Fall"), each = n / 4))
+
+marketing_spend <- c(marketing_spend_A, marketing_spend_B)
+average_price <- c(average_price_A, average_price_B)
+category <- factor(c(rep("A", n/2), rep("B", n/2)))
+
+
+sales <- ifelse(category == "A", 
+                marketing_spend * 1.2 - average_price * 1.5 + rnorm(n/2, mean = 5000, sd = 500),
+                marketing_spend * 0.8 - average_price * 1.2 + rnorm(n/2, mean = 3000, sd = 500))
+
+
+data <- data.frame(marketing_spend, average_price, season, sales, category)
+
+head(data)
+
+```
+## Implementing LDA in R
+
+We'll use the `MASS` package to perform LDA on our dataset, aiming to predict product categories based on features.
+
+```{r lda_model, message=FALSE}
+library(MASS)
+
+# Splitting data into training and testing sets
+set.seed(123)
+train_indices <- sample(1:n, n * 0.7)
+train_data <- data[train_indices, ]
+test_data <- data[-train_indices, ]
+
+# Fitting LDA model
+lda_fit <- lda(category ~ ., data = train_data)
+
+# Model summary
+print(lda_fit)
+```
+
+### Interpreting the model
+
+The model summary of the Linear Discriminant Analysis (LDA) provides insightful information about how the model differentiates between the two product categories, A and B, based on the four features. Here's how to interpret the key components of the summary:
+
+1. **Prior Probabilities of Groups:**
+   - The prior probabilities for both categories A and B are set to 0.5, indicating that, before looking at the data, the model assumes an equal chance of any product belonging to either category. This is a common assumption when no prior knowledge suggests otherwise.
+
+2. **Group Means:**
+   - The group means section shows the average values of each feature for categories A and B.
+   - For `marketing_spend` and `average_price`, category A has significantly higher means (14849.03 and 34.45523, respectively) compared to category B (10193.15 and 20.65240, respectively), suggesting these features are influential in distinguishing between the two categories.
+   - The season variables (`seasonSpring`, `seasonSummer`, `seasonWinter`) are binary (0 or 1), reflecting the presence of a particular season in the data. The means here indicate the proportion of each category that falls into each season. For example, all observations of category A are in either Spring or Winter, while B is predominantly in Summer.
+   - `Sales` also shows a significant difference in means between the two categories, with category A having higher sales on average (22771.79) than category B (11343.56).
+
+3. **Coefficients of Linear Discriminants (LD1):**
+   - The coefficients for LD1 show how each feature contributes to the linear discriminant function used to separate the two categories.
+   - `marketing_spend` has a small positive coefficient (0.001549373), suggesting that higher marketing spend slightly contributes towards classifying a product as category A.
+   - `average_price` has a negative coefficient (-0.030311115), indicating that lower average prices lean towards classifying a product as category A, which might seem counterintuitive given the group means but could reflect the complex relationship between price, spend, and sales across categories.
+   - Season variables show interesting contributions: `seasonSummer` has a substantial positive coefficient (0.444259914), heavily influencing classification towards category B if the product is sold in Summer. Conversely, `seasonSpring` and `seasonWinter` have much smaller and opposite sign coefficients, affecting classification towards category A for `seasonWinter` and towards B for `seasonSpring` but with a minor impact compared to `seasonSummer`.
+   
+In summary, the LDA model reveals that `marketing_spend`, `average_price`, and particularly `season` play significant roles in categorizing products into A or B, with the season having a pronounced impact. The model suggests a complex interplay between these features in determining product categories, with `seasonSummer` being a strong predictor for category B. This analysis helps understand which features most influence product categorization and how they do so.
+
+## Model Evaluation
+
+Evaluate the LDA model's performance on the test set.
+
+```{r model_evaluation}
+# Predicting test set categories
+predictions <- predict(lda_fit, test_data[,-5])$class
+
+# Confusion Matrix
+table(Predicted = predictions, Actual = test_data$category)
+```
+
+### Interpreting the confusion matrix
+
+- **True Positives (TP):** The model correctly predicted 15 instances of category A as A. These are your true positives for category A.
+  
+- **True Negatives (TN):** The model correctly predicted 15 instances of category B as B. Even though they are called "negatives" in this binary classification context, it's important to understand that "negative" refers to the prediction of the second category, which in this case is category B. So, these are effectively true positives for category B.
+
+- **False Positives (FP) for A (or False Negatives for B):** The model did not incorrectly predict any instances of category B as A. This value is 0, indicating high precision for category A predictions.
+
+- **False Negatives (FN) for A (or False Positives for B):** Similarly, the model did not incorrectly predict any instances of category A as B. This value is also 0, indicating high recall for category A predictions.
+
+#### Model Evaluation Metrics
+
+- **Accuracy:** The accuracy of the model is the total number of correct predictions divided by the total number of predictions made. For this model, accuracy is (15+15) / (15+15) = 30 / 30 = 1 or 100%. This means the model perfectly classified all test instances.
+
+- **Precision for A:** Precision is the number of true positives divided by the number of true positives plus the number of false positives. For category A, precision is 15 / (15+0) = 1 or 100%. This indicates that all products predicted as category A were indeed A.
+
+- **Recall (Sensitivity) for A:** Recall is the number of true positives divided by the number of true positives plus the number of false negatives. For category A, recall is 15 / (15+0) = 1 or 100%. This means the model successfully identified all actual instances of category A.
+
+- **F1 Score for A:** The F1 score is the harmonic mean of precision and recall. For category A, given both precision and recall are 1, the F1 score is also 1 or 100%.
+
+The confusion matrix indicates a perfect classification performance by the LDA model on this test dataset, with 100% accuracy, precision, recall, and F1 score for both categories A and B. Such a result suggests that the model is highly effective at distinguishing between categories A and B based on the given features. However, while perfect performance is ideal, it's crucial to evaluate the model on a sufficiently large and representative dataset to ensure these results aren't due to overfitting or a very selective test dataset.
+
+## Visualizing LDA Results
+
+Visualize the LDA projection to understand how well the model separates different categories.
+
+```{r lda_visualization, echo=TRUE}
+library(ggplot2)
+
+# Extracting LDA scores
+lda_scores <- predict(lda_fit)$x
+
+lda_scores_df <- as.data.frame(lda_scores)
+
+# Add the actual category for each observation to the lda_scores_df
+lda_scores_df$category <- data$category[train_indices]
+
+# Plot
+ggplot(lda_scores_df, aes(x = LD1, color = category)) +
+  geom_density() +
+  theme_minimal() +
+  ggtitle("LDA Projection on LD1")
+
+```
+
+## Conclusion
+
+LDA in R offers a straightforward yet powerful method for classification and dimensionality reduction. By projecting data onto lower dimensions, LDA facilitates the visualization of complex datasets and improves the understanding of category separability.
