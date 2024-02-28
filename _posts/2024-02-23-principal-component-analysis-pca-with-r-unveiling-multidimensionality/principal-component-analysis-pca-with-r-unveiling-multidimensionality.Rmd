@@ -1,0 +1,147 @@
+---
+title: "Principal Component Analysis (PCA) with R: Unveiling Multidimensionality"
+description: |
+  Explore Principal Component Analysis (PCA) in R, an indispensable technique for dimensionality reduction and data visualization. This comprehensive guide covers everything from the basics of PCA to its implementation for enhancing feature understanding and simplifying complex datasets.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-02-23
+categories: 
+  - [Dimensionality Reduction]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r package, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+list.of.packages <- c("tidyverse", "factoextra")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+## Introduction
+
+Principal Component Analysis (PCA) is a statistical procedure that transforms a complex dataset with many variables into a simpler one with fewer, yet highly informative, new variables known as principal components. By doing so, PCA enables us to visualize and understand the underlying structure of our data better. This guide will walk you through implementing PCA in R, using a simulated dataset to predict product categories.
+
+## Setting Up the Environment
+
+To get started, we'll load the necessary R packages for data manipulation, visualization, and performing PCA.
+
+```{r setup, echo=TRUE}
+library(tidyverse)  # For data manipulation and visualization
+library(factoextra) # For PCA visualization
+set.seed(2024)      # Ensuring reproducibility
+```
+
+## Generating a simulated dataset
+
+We'll create a synthetic dataset where PCA can be particularly beneficial.
+
+```{r generate-data}
+set.seed(123) # To ensure reproducibility
+
+n <- 200 # Number of observations
+
+# Generating features for Type A
+feature1_A <- rnorm(n/2, mean = 70, sd = 10)
+feature2_A <- 1.2 * feature1_A + rnorm(n/2, mean = 0, sd = 5)
+feature3_A <- 0.8 * feature1_A - rnorm(n/2, mean = 0, sd = 5)
+
+# Generating features for Type B
+feature1_B <- rnorm(n/2, mean = 40, sd = 10)
+feature2_B <- 1.2 * feature1_B + rnorm(n/2, mean = 0, sd = 5)
+feature3_B <- 0.8 * feature1_B - rnorm(n/2, mean = 0, sd = 5)
+
+# Combining the data into one tibble
+data_A <- tibble(
+  feature1 = feature1_A,
+  feature2 = feature2_A,
+  feature3 = feature3_A,
+  category = factor(rep("Type A", n/2))
+)
+
+data_B <- tibble(
+  feature1 = feature1_B,
+  feature2 = feature2_B,
+  feature3 = feature3_B,
+  category = factor(rep("Type B", n/2))
+)
+
+data <- bind_rows(data_A, data_B)
+
+# Randomly shuffling observations to simulate random sampling
+data <- data[sample(1:nrow(data)), ]
+
+# Displaying the first few rows of the dataset
+head(data)
+```
+
+## Performing PCA
+
+Let's apply PCA to our dataset, focusing on reducing its dimensionality while preserving as much information as possible.
+
+```{r perform-pca, echo=TRUE}
+pca_result <- prcomp(data[1:3], scale. = TRUE)
+summary(pca_result)
+fviz_screeplot(pca_result, addlabels = TRUE, ylim = c(0, 100))
+```
+
+### Interpreting Summary
+
+- **PC1** is the most significant component, capturing the majority of the variance in the dataset, suggesting that it reflects the most critical underlying structure or pattern within the data.
+
+- **PC2**, while capturing much less variance than PC1, still contributes meaningful information and, together with PC1, provides a comprehensive view of the data's variability.
+
+- **PC3** adds little additional information in terms of variance explained, indicating that the dataset's variability can be effectively understood through the first two components.
+
+In practical terms, this analysis suggests that dimensionality reduction from three (or more) dimensions down to two (PC1 and PC2) would retain the majority of the information in the data, simplifying analysis and visualization without losing significant insights.
+
+
+## Visualizing PCA Results
+
+Visualization is key to understanding PCA results. Let's plot the principal components.
+
+```{r visualize-pca, echo=TRUE}
+# Graph of variables: default plot
+fviz_pca_var(pca_result, col.var = "black")
+```
+\underline{Interpretation:} The plot above is also known as variable correlation plots. It shows the relationships between all variables. Feature1, Feature2 and Feature3 show a strong negative correlation with Dim.1, meaning that as Dim.1 increases, these features tend to decrease, and vice versa.
+
+You can visualize the cos2 of variables on all the dimensions using the `corrplot` package or show individuals by group with the function `fviz_pca_ind` using factoextra package.
+
+```{r, cor, echo=TRUE}
+library("corrplot")
+corrplot(get_pca_var(pca_result)$cos2, is.corr=FALSE)
+```
+```{r ind, echo=TRUE}
+fviz_pca_ind(pca_result,
+             geom.ind = "point", # show points only (nbut not "text")
+             col.ind = data$category, # color by groups
+             palette = "RdYBu",
+             addEllipses = TRUE, # Concentration ellipses
+             legend.title = "Groups"
+             )
+```
+
+Another example is to color individuals by groups (discrete color) and variables by their contributions to the principal components (gradient colors).
+
+
+```{r biplot, echo=TRUE}
+fviz_pca_biplot(pca_result, 
+                # Individuals
+                geom.ind = "point",
+                fill.ind = data$category, col.ind = "black",
+                pointshape = 21, pointsize = 2,
+                palette = "jco",
+                addEllipses = TRUE,
+                # Variables
+                col.var = "contrib",
+                gradient.cols = "RdYlBu",
+                
+                legend.title = list(fill = "category", color = "Contrib",
+                                    alpha = "Contrib")
+                )
+```
