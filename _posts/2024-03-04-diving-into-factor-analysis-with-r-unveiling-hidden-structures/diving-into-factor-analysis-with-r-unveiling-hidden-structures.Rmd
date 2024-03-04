@@ -1,0 +1,112 @@
+---
+title: "Diving Into Factor Analysis with R: Unveiling Hidden Structures"
+description: |
+  Explore Factor Analysis with R to reveal hidden structures within your data. This post offers an introduction to Factor Analysis, highlighting its differences and complementarities with PCA, and guides readers through implementing it in R to identify latent factors in multidimensional datasets.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-03-01
+categories: 
+  - [Dimensionality Reduction]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r package, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+list.of.packages <- c("factoextra", "psych")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+## Introduction
+
+Factor Analysis (FA) is a statistical method used to describe variability among observed, correlated variables in terms of potentially lower unobserved variables called factors. Unlike Principal Component Analysis (PCA) which focuses on total variance, Factor Analysis helps in understanding the underlying relationships between variables, making it invaluable for social sciences, marketing, product management, and more.
+
+## Setting Up the Environment
+
+Ensure the necessary packages are installed and loaded. We will use the `factoextra` and `psych` packages for factor analysis and visualization.
+
+```{r setup, echo=TRUE}
+library(factoextra)
+library(psych)
+library(MASS)
+```
+
+## Generating a simulated dataset
+
+Let's create a simulated dataset to apply factor analysis.
+
+```{r generate-data}
+set.seed(123)
+n <- 100
+mu <- rep(0, 3)
+
+Sigma <- matrix(c(1, 0.8, 0.8, 0.8, 1, 0.8, 0.8, 0.8, 1), ncol = 3)
+data <- mvrnorm(n = n, mu = mu, Sigma = Sigma)
+data_df <- as.data.frame(data)
+names(data_df) <- c("Variable1", "Variable2", "Variable3")
+
+# Preview the data
+head(data_df)
+```
+
+## Performing Factor Analysis
+
+Factor analysis identifies the underlying relationships between variables.
+
+```{r factor-analysis}
+fa_result <- fa(data, nfactors = 2)
+print(fa_result)
+```
+
+## Visualizing the Results
+
+Visualize the factor loadings to understand how each variable relates to the underlying factors.
+
+```{r visualization}
+# Visualiser les chargements factoriels
+# Cela nécessite le package 'fa' pour une meilleure visualisation graphique
+# install.packages("fa")
+fa.diagram(fa_result)
+```
+
+## Interpreting the Results
+
+The factor analysis you conducted using the "minres" method (Minimum Residual) to extract two factors from your dataset provides several key results:
+
+- **Standardized loadings (pattern matrix)**: This matrix shows the factor loadings, which indicate how strongly each variable is associated with the identified factors. In your case, the loadings for MR2 are all zero, suggesting that the second factor does not have a significant relationship with the observed variables. This is also reflected by the "SS loadings" (sums of squared loadings) for MR2 being 0.
+
+- **SS loadings**: The sum of squared loadings for MR1 is 2.35, indicating the variance explained by this factor. For MR2, the sum is 0, indicating it explains no variance in the data.
+
+- **Proportion Var**: Indicates the proportion of total variance explained by each factor. MR1 explains 78% of the variance, while MR2 explains none.
+
+- **Cumulative Var** and **Proportion Explained**: Show that MR1 is the only factor contributing to explaining variance in the data, with 78% of the variance cumulatively explained.
+
+- **Mean item complexity = 1**: Suggests an average item complexity of 1, indicating that each variable is primarily influenced by a single factor.
+
+- **Test of the hypothesis that 2 factors are sufficient**: The output indicates that the two-factor model is not appropriate, as suggested by the objective function of 0 for the fitted model, indicating a perfect fit which is suspect given the context of other results.
+
+- **RMSR (Root Mean Square of the Residuals) = 0**: Suggests minimal difference between observed correlations and those estimated by the model, typically indicating a good fit. However, this result should be interpreted cautiously given the context of other indicators.
+
+- **Tucker Lewis Index of factoring reliability = 1.015** and **Fit based upon off diagonal values = 1**: These indices suggest a good model fit, but they should be considered cautiously given the overall results.
+
+- **Correlation of (regression) scores with factors**: Shows a strong correlation between regression scores and the factor MR1 (0.96), but a negligible correlation with MR2 (0.10), reinforcing the idea that only the first factor is relevant.
+
+- **Minimum correlation of possible factor scores**: Indicates the minimum correlation between possible factor scores and the factors, with a strong correlation for MR1 (0.83) and a negative correlation for MR2 (-0.98), consistent with the idea that MR2 does not significantly contribute.
+
+In summary, these results suggest that in your factor analysis model, only one factor (MR1) is relevant and explains a significant proportion of the variance in your data. The second factor (MR2) does not appear to contribute to explaining variance and could be excluded from further analysis.
+
+- **PC1** is the most significant component, capturing the majority of the variance in the dataset, suggesting that it reflects the most critical underlying structure or pattern within the data.
+
+- **PC2**, while capturing much less variance than PC1, still contributes meaningful information and, together with PC1, provides a comprehensive view of the data's variability.
+
+- **PC3** adds little additional information in terms of variance explained, indicating that the dataset's variability can be effectively understood through the first two components.
+
+In practical terms, this analysis suggests that dimensionality reduction from three (or more) dimensions down to two (PC1 and PC2) would retain the majority of the information in the data, simplifying analysis and visualization without losing significant insights.
+
+## Conclusion
+
+Factor Analysis provides deep insights into the hidden structure of data, revealing the underlying factors that influence observed variables. By applying FA, researchers can uncover dimensions of latent constructs, enriching their understanding of complex datasets.
