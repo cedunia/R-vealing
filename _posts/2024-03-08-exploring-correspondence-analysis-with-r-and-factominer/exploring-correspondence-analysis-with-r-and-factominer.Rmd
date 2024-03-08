@@ -54,6 +54,7 @@ Now, let's perform Correspondence Analysis on the contingency table.
 
 ```{r perform-pca, echo=TRUE}
 ca_result <- CA(contingency_table, graph = FALSE)
+summary.CA(ca_result)
 ```
 
 ## Visualizing the Results

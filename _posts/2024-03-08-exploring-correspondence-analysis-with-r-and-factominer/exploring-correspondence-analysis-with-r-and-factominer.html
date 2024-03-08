@@ -1555,8 +1555,44 @@ Hair    Brown Blue Hazel Green
 <p>Now, let’s perform Correspondence Analysis on the contingency table.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>ca_result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/FactoMineR/man/CA.html'>CA</a></span><span class='op'>(</span><span class='va'>contingency_table</span>, graph <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>ca_result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/FactoMineR/man/CA.html'>CA</a></span><span class='op'>(</span><span class='va'>contingency_table</span>, graph <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/pkg/FactoMineR/man/summary.CA.html'>summary.CA</a></span><span class='op'>(</span><span class='va'>ca_result</span><span class='op'>)</span></span></code></pre>
 </div>
+<pre><code>
+Call:
+CA(X = contingency_table, graph = FALSE) 
+
+The chi square of independence between the two variables is equal to 138.2898 (p-value =  2.325287e-25 ).
+
+Eigenvalues
+                       Dim.1   Dim.2   Dim.3
+Variance               0.209   0.022   0.003
+% of var.             89.373   9.515   1.112
+Cumulative % of var.  89.373  98.888 100.000
+
+Rows
+        Iner*1000     Dim.1     ctr    cos2     Dim.2     ctr    cos2
+Black |    55.425 |   0.505  22.246   0.838 |  -0.215  37.877   0.152
+Brown |    12.284 |   0.148   5.086   0.864 |   0.033   2.319   0.042
+Red   |    15.095 |   0.130   0.964   0.133 |   0.320  55.131   0.812
+Blond |   150.793 |  -0.835  71.704   0.993 |  -0.070   4.673   0.007
+          Dim.3     ctr    cos2  
+Black |  -0.056  21.633   0.010 |
+Brown |   0.049  44.284   0.094 |
+Red   |  -0.083  31.913   0.055 |
+Blond |  -0.016   2.171   0.000 |
+
+Columns
+        Iner*1000     Dim.1     ctr    cos2     Dim.2     ctr    cos2
+Brown |    93.086 |   0.492  43.116   0.967 |  -0.088  13.042   0.031
+Blue  |   111.337 |  -0.547  52.128   0.977 |  -0.083  11.244   0.022
+Hazel |    13.089 |   0.213   3.401   0.542 |   0.167  19.804   0.336
+Green |    16.085 |  -0.162   1.355   0.176 |   0.339  55.910   0.773
+          Dim.3     ctr    cos2  
+Brown |  -0.022   6.680   0.002 |
+Blue  |   0.005   0.310   0.000 |
+Hazel |   0.101  61.086   0.121 |
+Green |  -0.088  31.925   0.052 |</code></pre>
 </div>
 <h2 id="visualizing-the-results">Visualizing the Results</h2>
 <p>Visualization is a key part of Correspondence Analysis. Let’s plot the categories of our variables in the CA space.</p>
@@ -1572,7 +1608,7 @@ Hair    Brown Blue Hazel Green
 <li><strong>Dimension 1</strong> seems to separate hair colors on a spectrum from <code>Blond</code> to <code>Black/Brown</code>, with <code>Blond</code> hair being on one end and <code>Black</code> and <code>Brown</code> on the other. Eye colors also align along this dimension, with <code>Blue</code> eyes associated with <code>Blond</code> hair and <code>Brown</code> eyes with <code>Black/Brown</code> hair.</li>
 <li><strong>Dimension 2</strong> might capture additional variation not explained by the first dimension, such as the unique association between <code>Red</code> hair and <code>Green</code> eyes, as indicated by their significant contributions and positioning in relation to this dimension.</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
