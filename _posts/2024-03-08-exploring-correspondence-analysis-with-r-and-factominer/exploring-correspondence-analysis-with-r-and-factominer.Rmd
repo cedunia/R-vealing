@@ -1,0 +1,71 @@
+---
+title: "Exploring Correspondence Analysis with R and factoMineR"
+description: |
+  Dive into Correspondence Analysis (CA) with R to visualize and analyze the relationships between categories of two qualitative variables. Using `factoMineR`, this practical guide will show you how to apply CA to uncover hidden insights in your categorical data.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-03-08
+categories: 
+  - [Categorical Data Analysis]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r package, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+list.of.packages <- c("FactoMineR")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+## Introduction
+
+Correspondence Analysis (CA) is a multivariate statistical technique designed to explore relationships between two or more categorical variables. It's particularly effective for visualizing the strength and patterns of associations in a low-dimensional space. In this post, we'll focus on applying CA using the `factoMineR` package in R, a comprehensive tool for multivariate data analysis.
+
+## Setting Up the Environment
+
+To get started, we'll load the necessary R packages for data manipulation, visualization, and performing PCA.
+
+```{r setup, echo=TRUE}
+library(FactoMineR)
+```
+
+## Generating a Contingency Table
+
+For demonstration purposes, we'll use a built-in dataset in R and create a contingency table.
+
+```{r generate-data}
+set.seed(123) # To ensure reproducibility
+
+data("HairEyeColor")
+contingency_table <- margin.table(HairEyeColor, margin = c(1, 2))
+
+# Display the contingency table
+contingency_table
+```
+
+## Performing Correspondence Analysis
+
+Now, let's perform Correspondence Analysis on the contingency table.
+
+```{r perform-pca, echo=TRUE}
+ca_result <- CA(contingency_table, graph = FALSE)
+```
+
+## Visualizing the Results
+
+Visualization is a key part of Correspondence Analysis. Let's plot the categories of our variables in the CA space.
+
+```{r visualization}
+plot.CA(ca_result, col.row = "steelblue", col.col = "darkred", 
+        title = "Correspondence Analysis of Hair and Eye Color")
+```
+
+## Interpreting the Results
+
+- **Dimension 1** seems to separate hair colors on a spectrum from `Blond` to `Black/Brown`, with `Blond` hair being on one end and `Black` and `Brown` on the other. Eye colors also align along this dimension, with `Blue` eyes associated with `Blond` hair and `Brown` eyes with `Black/Brown` hair.
+- **Dimension 2** might capture additional variation not explained by the first dimension, such as the unique association between `Red` hair and `Green` eyes, as indicated by their significant contributions and positioning in relation to this dimension.
