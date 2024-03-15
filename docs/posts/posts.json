@@ -1,5 +1,25 @@
 [
   {
+    "path": "posts/2024-03-15-mastering-support-vector-machines-svm-with-r-a-comprehensive-guide/",
+    "title": "Mastering Support Vector Machines (SVM) with R: A Comprehensive Guide",
+    "description": "Dive into Support Vector Machines (SVM) with R to tackle complex classification and regression challenges. This comprehensive guide introduces you to the fundamentals of SVM, details their implementation in R, and explores advanced techniques to optimize your models. With practical examples, learn how to leverage SVM for accurate and robust predictions in your data science projects.",
+    "author": [
+      {
+        "name": "Cédric Hassen-Khodja",
+        "url": {}
+      }
+    ],
+    "date": "2024-03-15",
+    "categories": [
+      "Categorical Data Analysis",
+      "Visualization"
+    ],
+    "contents": "\nIntroduction\nSupport Vector Machines (SVM) are a powerful set of supervised learning methods used for classification, regression, and outliers detection. Thanks to their ability to handle high-dimensional data and their versatility in modeling complex nonlinear relationships, SVMs have become a staple in the data scientist’s toolkit.\nSetting Up\nLet’s start by ensuring we have all necessary R packages installed and loaded. The e1071 package in R provides functionalities for SVM.\n\n\nlibrary(e1071)\n\n\nUnderstanding SVM\nAt its core, SVM works by finding the hyperplane that best separates the classes in the feature space. For nonlinear relationships, SVM uses kernel functions to transform the data into a higher-dimensional space where it can find a linear separator.\nImplementing SVM in R\nTo demonstrate SVM in action, let’s use a simple built-in dataset in R.\n\n\ndata(iris)\nsvm_model <- svm(Species ~ ., data = iris, kernel = \"radial\")\nprint(svm_model)\n\n\nCall:\nsvm(formula = Species ~ ., data = iris, kernel = \"radial\")\n\n\nParameters:\n   SVM-Type:  C-classification \n SVM-Kernel:  radial \n       cost:  1 \n\nNumber of Support Vectors:  51\n\nModel Evaluation\nEvaluating the performance of your SVM model is crucial. Let’s split our data into training and testing sets to assess the model’s accuracy.\n\n\nset.seed(123)\ntrainIndex <- sample(1:nrow(iris), nrow(iris)*0.8)\ntrainData <- iris[trainIndex, ]\ntestData <- iris[-trainIndex, ]\n\nsvm_model_eval <- svm(Species ~ ., data = trainData, kernel = \"radial\")\npredictions <- predict(svm_model_eval, testData)\n\ntable(predictions, testData$Species)\n\n            \npredictions  setosa versicolor virginica\n  setosa         10          0         0\n  versicolor      0         14         0\n  virginica       0          1         5\n\nOptimizing SVM Parameters\nThe choice of kernel and the tuning of SVM parameters like cost (C) and gamma can significantly affect model performance. Let’s explore parameter optimization.\n\n\n# Example of parameter tuning\ntuned <- tune(svm, Species ~ ., data = trainData, \n              kernel = \"radial\", ranges = list(cost = 10^(-1:2), gamma = 10^(-1:2)))\n\nbest_model <- tuned$best.model\nprint(best_model)\n\n\nCall:\nbest.tune(METHOD = svm, train.x = Species ~ ., data = trainData, \n    ranges = list(cost = 10^(-1:2), gamma = 10^(-1:2)), kernel = \"radial\")\n\n\nParameters:\n   SVM-Type:  C-classification \n SVM-Kernel:  radial \n       cost:  10 \n\nNumber of Support Vectors:  29\n\nConclusion\nSupport Vector Machines offer a robust framework for tackling both linear and nonlinear data modeling challenges. By mastering SVM in R, you can enhance your predictive modeling capabilities and uncover deep insights from complex datasets.\n\n\n\n",
+    "preview": {},
+    "last_modified": "2024-03-15T16:27:47+01:00",
+    "input_file": "mastering-support-vector-machines-svm-with-r-a-comprehensive-guide.knit.md"
+  },
+  {
     "path": "posts/2024-03-08-exploring-correspondence-analysis-with-r-and-factominer/",
     "title": "Exploring Correspondence Analysis with R and factoMineR",
     "description": "Dive into Correspondence Analysis (CA) with R to visualize and analyze the relationships between categories of two qualitative variables. Using `factoMineR`, this practical guide will show you how to apply CA to uncover hidden insights in your categorical data.",

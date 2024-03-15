@@ -1,0 +1,80 @@
+---
+title: "Mastering Support Vector Machines (SVM) with R: A Comprehensive Guide"
+description: |
+  Dive into Support Vector Machines (SVM) with R to tackle complex classification and regression challenges. This comprehensive guide introduces you to the fundamentals of SVM, details their implementation in R, and explores advanced techniques to optimize your models. With practical examples, learn how to leverage SVM for accurate and robust predictions in your data science projects.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-03-15
+categories: 
+  - [Categorical Data Analysis]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r package, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+list.of.packages <- c("e1071")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+```
+
+## Introduction
+
+Support Vector Machines (SVM) are a powerful set of supervised learning methods used for classification, regression, and outliers detection. Thanks to their ability to handle high-dimensional data and their versatility in modeling complex nonlinear relationships, SVMs have become a staple in the data scientist's toolkit.
+
+## Setting Up
+
+Let's start by ensuring we have all necessary R packages installed and loaded. The `e1071` package in R provides functionalities for SVM.
+
+```{r setup}
+library(e1071)
+```
+
+## Understanding SVM
+
+At its core, SVM works by finding the hyperplane that best separates the classes in the feature space. For nonlinear relationships, SVM uses kernel functions to transform the data into a higher-dimensional space where it can find a linear separator.
+
+## Implementing SVM in R
+
+To demonstrate SVM in action, let's use a simple built-in dataset in R.
+
+```{r svm-example}
+data(iris)
+svm_model <- svm(Species ~ ., data = iris, kernel = "radial")
+print(svm_model)
+```
+
+## Model Evaluation
+
+Evaluating the performance of your SVM model is crucial. Let's split our data into training and testing sets to assess the model's accuracy.
+
+```{r model-evaluation}
+set.seed(123)
+trainIndex <- sample(1:nrow(iris), nrow(iris)*0.8)
+trainData <- iris[trainIndex, ]
+testData <- iris[-trainIndex, ]
+
+svm_model_eval <- svm(Species ~ ., data = trainData, kernel = "radial")
+predictions <- predict(svm_model_eval, testData)
+
+table(predictions, testData$Species)
+```
+## Optimizing SVM Parameters
+
+The choice of kernel and the tuning of SVM parameters like cost (`C`) and gamma can significantly affect model performance. Let's explore parameter optimization.
+
+```{r optimization}
+# Example of parameter tuning
+tuned <- tune(svm, Species ~ ., data = trainData, 
+              kernel = "radial", ranges = list(cost = 10^(-1:2), gamma = 10^(-1:2)))
+
+best_model <- tuned$best.model
+print(best_model)
+```
+## Conclusion
+
+Support Vector Machines offer a robust framework for tackling both linear and nonlinear data modeling challenges. By mastering SVM in R, you can enhance your predictive modeling capabilities and uncover deep insights from complex datasets.
