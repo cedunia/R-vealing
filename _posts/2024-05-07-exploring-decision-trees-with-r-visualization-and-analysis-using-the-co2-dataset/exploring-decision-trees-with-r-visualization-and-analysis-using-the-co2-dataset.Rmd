@@ -1,0 +1,137 @@
+---
+title: "Exploring Decision Trees with R: Visualization and Analysis Using the CO2 Dataset"
+description: |
+  Dive into the application of decision tree models using R, employing the unique `CO2` dataset. This guide will walk you through the process of building, visualizing, and interpreting decision trees to analyze how different treatment types affect CO2 uptake in plants.
+theme: theme.css
+author:
+  - name: Cédric Hassen-Khodja
+date: 2024-05-04
+categories: 
+  - [Machine Learning]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r package, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+required_packages <- c("rpart", "rpart.plot", "caret", "datasets")
+new_packages <- required_packages[!required_packages %in% installed.packages()[,"Package"]]
+if(length(new_packages) > 0) install.packages(new_packages)
+library(rpart)
+library(rpart.plot)
+library(caret)
+library(datasets)
+```
+
+## Introduction
+
+In this guide, we will utilize the `CO2` dataset to demonstrate the power of decision trees within the R programming environment. The dataset contains information on the CO2 uptake in grass plants under various types of treatment, making it an ideal candidate for exploring complex relationships through decision trees.
+
+## Preparing the Data
+
+Load and prepare the `CO2` dataset for analysis.
+
+```{r data-prep}
+data("CO2")
+CO2$Plant <- as.factor(CO2$Plant)
+CO2$Type <- as.factor(CO2$Type)
+CO2$Treatment <- as.factor(CO2$Treatment)
+```
+
+## Building a Decision Tree Model
+
+Create and train a decision tree model using the `rpart` package.
+
+```{r model-build}
+# Define the formula
+formula <- uptake ~ Plant + Type + Treatment + conc
+
+# Train the model
+tree_model <- rpart(formula, data = CO2, method = "anova")
+
+# View the model output
+print(tree_model)
+```
+
+## Visualizing the Decision Tree
+
+Visualize the decision tree to understand how different variables influence CO2 uptake.
+
+```{r visualize-tree}
+rpart.plot(tree_model, main="Decision Tree Visualization")
+```
+
+## Evaluating Model Performance
+
+Assess the performance of the model using cross-validation.
+
+```{r model-eval}
+fitControl <- trainControl(method = "cv", number = 10)
+model_cv <- train(formula, data = CO2, method = "rpart", trControl = fitControl)
+print(model_cv$results)
+```
+
+### Interpretation of Metrics:
+
+- **CP (Complexity Parameter)**: Lower CP values generally result in a more complex model, capable of capturing detailed patterns in the dataset. The model with the smallest CP (`0.01642262`) achieves the best balance between complexity and performance, leading to the most accurate predictions.
+
+- **RMSE (Root Mean Squared Error)** and **MAE (Mean Absolute Error)**: These metrics provide measures of the average errors in the model's predictions. Lower values indicate better model accuracy, with the model at CP=`0.01642262` showing the lowest errors, suggesting it is the most accurate.
+
+- **R-squared**: This metric indicates how well the variations in the dependent variable are explained by the model. A higher R-squared value, as seen in the model with CP=`0.01642262` (`0.8349359`), suggests a high explanatory power of the model.
+
+- **Standard Deviations (RMSESD, RsquaredSD, MAESD)**: These values measure the variability of the performance metrics across different cross-validation folds. Lower standard deviations indicate that the model's performance is stable and consistent across different subsets of the data.
+
+The decision tree model with a CP of `0.01642262` not only offers the best performance in terms of prediction accuracy (lowest RMSE and MAE) and explanatory power (highest R-squared) but also demonstrates consistency and reliability across different data folds, as evidenced by the low standard deviations in its performance metrics. This model is thus recommended for predicting CO2 uptake in grass plants, providing insightful and reliable predictions that can help guide agricultural practices and research.
+
+## Optimal Decision Tree Model Configuration
+
+Based on the cross-validation results, the decision tree model with a complexity parameter (CP) of `0.01642262` showed the best performance. We will now detail the configuration and training of this optimal model using the `rpart` package in R.
+
+```{r optimal-model-setup}
+# Specify the optimal parameters
+optimal_cp <- 0.01642262
+
+# Configure and train the optimal decision tree model
+optimal_tree_model <- rpart(
+    formula = uptake ~ Plant + Type + Treatment + conc,
+    data = CO2,
+    method = "anova",
+    control = rpart.control(cp = optimal_cp)
+)
+
+# Print the summary of the optimal model
+summary(optimal_tree_model)
+```
+
+### Visualizing the Optimal Decision Tree
+
+It's also useful to visualize the tree to understand how it makes decisions based on the inputs:
+
+```{r visualize-optimal-tree}
+rpart.plot(optimal_tree_model, main="Optimal Decision Tree Visualization")
+```
+### Evaluating the Optimal Model
+
+To confirm the performance of the optimal model, we can use the same cross-validation setup as before and assess its metrics:
+
+```{r evaluate-optimal-model}
+# Re-evaluate using the same cross-validation control setup
+optimal_model_cv <- train(uptake ~ Plant + Type + Treatment + conc, data = CO2, 
+                          method = "rpart", 
+                          trControl = fitControl, 
+                          tuneGrid = data.frame(cp = optimal_cp))
+
+# Print the results for the optimal model
+print(optimal_model_cv$results)
+```
+
+### Interpretation of the Optimal Model's Performance
+
+After re-evaluating the optimal model with the specified complexity parameter, we expect to see consistent results with our previous findings, demonstrating low RMSE and MAE and a high R-squared, confirming the model's effectiveness and reliability.
+
+### Conclusion
+
+By configuring the decision tree with the identified optimal complexity parameter, we harness the full potential of the model to provide precise and reliable predictions. This model not only fits our data well but also ensures that it generalizes effectively across different data scenarios as shown in our cross-validation results. This approach underlines the importance of fine-tuning and rigorously testing machine learning models to achieve the best possible outcomes in predictive accuracy and interpretability.
