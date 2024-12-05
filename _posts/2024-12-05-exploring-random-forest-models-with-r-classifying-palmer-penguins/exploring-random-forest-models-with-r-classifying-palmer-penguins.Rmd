@@ -1,0 +1,215 @@
+---
+title: "Exploring Random Forest Models with R: Classifying Palmer Penguins"
+description: |
+  Discover how to use a Random Forest model to classify penguin species from the Palmer Penguins dataset. This tutorial covers data preparation, model construction, cross-validation evaluation, performance interpretation, and hyperparameter optimization, illustrating the power of Random Forests in species classification.
+theme: theme.css
+author:
+  - name: "Cédric Hassen-Khodja"
+date: 2024-12-05
+categories:
+  - [Machine Learning]
+  - [Classification]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+required_packages <- c("randomForest", "caret", "palmerpenguins", "dplyr")
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if(length(new_packages) > 0) install.packages(new_packages)
+library(randomForest)
+library(caret)
+library(palmerpenguins)
+library(dplyr)
+```
+
+## Introduction
+
+The **Palmer Penguins** dataset contains measurements of three penguin species (Adélie, Gentoo, and Chinstrap) collected from three islands in the Palmer Archipelago, Antarctica. The data includes morphological measurements (bill length, bill depth, flipper length, and body mass), as well as island and sex information.
+
+Our goal is to build a **Random Forest** classifier to predict species based on these features. We will then evaluate and optimize the model to ensure it performs accurately and consistently.
+
+## Data Preparation
+
+We will first prepare and clean the dataset by removing missing values and ensuring categorical variables are correctly encoded.
+
+```{r data-prep}
+data("penguins")
+penguins_clean <- penguins %>%
+  filter(!is.na(species),
+         !is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g),
+         !is.na(sex)) %>%
+  mutate(
+    species = as.factor(species),
+    island = as.factor(island),
+    sex = as.factor(sex)
+  )
+
+#Quick preview of the cleaned data
+head(penguins_clean)
+```
+
+## Building a Random Forest Model
+
+We will build an initial Random Forest model using `randomForest`. Our target variable is `species` and our predictors include `island`, `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g`, and `sex`.
+
+```{r model-build}
+formula <- species ~ island + bill_length_mm + bill_depth_mm + flipper_length_mm + body_mass_g + sex
+
+# set a seed for reproductibility
+set.seed(123)
+
+# Train the initial Random Forest model
+rf_model <- randomForest(formula, data = penguins_clean, ntree = 500, mtry = 2, importance = TRUE)
+print(rf_model)
+```
+
+### Initial Interpretation
+
+- **ntree=500**: We are building 500 decision trees to reduce variance and improve stability.
+- **mtry=2**: At each split in a tree, 2 predictors are randomly sampled from the available predictors
+- **OOB (Out-Of-Bag) Error**: Provides an internal estimate of error, allowing us to gauge model performance without a separate test set.
+
+## Variable Importance
+
+Use `varImpPlot` to visualize the importance of each variable in the classification.
+
+```{r var-importance}
+varImpPlot(rf_model, main="Variable Importance in the Random Forest (Penguins)")
+```
+
+- **MeanDecreaseAccuracy**: Shows how much accuracy decreases if that variable is removed. Higher values indicate more important variables.
+- **MeanDecreaseGini**: Reflects how much each variable contributes to decreasing node impurity. Higher values suggest the variable is highly useful for splitting the data.
+
+### Overall Interpretation
+
+- The **bill length** is the most influential predictor for classifying penguin species, followed by **flipper length** and **bill depth**.
+- **Sex** and **body mass** have minor contributions, suggesting they are less useful for species differentiation.
+- The island variable provides moderate importance, likely because certain species are associated with specific islands.
+
+## Model Evaluation via Cross-Validation
+
+To more robustly evaluate the model's performance and tune its parameters, we use the `caret` package with cross-validation. We will adjust the `mtry` parameter to find the optimal configuration.
+
+```{r model-eval}
+set.seed(123)
+fitControl <- trainControl(method = "cv", number = 10)
+
+# Create a grid of mtry values
+tuneGrid <- expand.grid(mtry = c(1, 2, 3, 4, 5, 6))
+
+rf_cv <- train(
+  formula,
+  data = penguins_clean,
+  method = "rf",
+  trControl = fitControl,
+  tuneGrid = tuneGrid,
+  ntree = 500
+)
+
+print(rf_cv)
+```
+
+
+### Interpreting the Results
+
+`caret` provides performance metrics for each `mtry` tested:
+
+- **Accuracy**: The proportion of correct predictions. Higher accuracy is better.
+- **Kappa**: A measure that accounts for chance predictions. Higher Kappa is better.
+
+The optimal model will have the highest accuracy and a high Kappa.
+
+- The **best accuracy (0.9911)** and highest **Kappa (0.9859)** were achieved with `mtry=1`.
+- Thus, the final model uses `mtry=1` as it provides the best classification results.
+
+## Optimal Random Forest Model
+
+Identify the best `mtry` and build the final model:
+
+```{r optimal-model}
+optimal_mtry <- rf_cv$bestTune$mtry
+rf_optimal <- randomForest(
+  formula,
+  data = penguins_clean,
+  ntree = 500,
+  mtry = optimal_mtry,
+  importance = TRUE
+)
+print(rf_optimal)
+```
+
+This model uses the optimal `mtry` parameter determined through cross-validation, offering improved preformance.
+
+## Final Evaluation
+
+To confirm the performance of the optimal model, we can generate predictions on the training data and examine the confusion matrix:
+
+```{r final-eval}
+predictions <- predict(rf_optimal, penguins_clean)
+confusionMatrix(predictions, penguins_clean$species)
+```
+
+A good model will have a high number of correct classifications along the diagonal of the confusion matrix and few misclassifications elsewhere.
+
+### Overal Statistics
+
+These metrics summarize the overall model performance:
+
+1. **Accuracy**:
+  - Proportion of correct predictions: **99.7%**.
+  - The 95% confidence interval for accuracy is **(98.34%, 99.99%)**, meaning we are 95% confident the true accuracy lies within this range.
+
+2. **No Information Rate (NIR)**:
+  - The proportion of the majority class in the dataset (Adelie: 43.84%).
+  - The model significantly outperforms this baseline, as shown by the very small **P-value (< 2.2e-16)**.
+
+3. **Kappa**:
+  - Agreement between predictions and actual classifications beyond chance: **0.9953**, which indicates near-perfect agreement.
+
+4. **McNemar's Test**:
+  - Not applicable (NA) because the model makes almost no classification errors.
+
+### Statistics by Class
+
+These metrics are provided for each species (Adelie, Chinstrap, Gentoo):
+
+1. **Sensitivity** (Recall/True Positive Rate):
+  - Proportion of correctly identified instances of each class:
+    - Adelie: **1.0000** (all Adelies were correctly identified).
+    - Chinstrap: **0.9853** (98.53% of Chinstraps were correctly identified).
+    - Gentoo: **1.0000** (all Gentoos were correctly identified).
+
+2. **Specificity**:
+  - Proportion of correctly identified negatives for each class:
+    - Adelie: **0.9947** (few misclassifications as Chinstrap/Gentoo).
+    - Chinstrap: **1.0000** (no misclassifications as Adelie/Gentoo).
+    - Gentoo: **1.0000** (no misclassifications as Adelie/Chinstrap).
+
+3. **Positive Predictive Value (PPV)** (Precision):
+  - Proportion of correctly classified instances for each predicted class:
+    - Adelie: **0.9932**.
+    - Chinstrap: **1.0000**.
+    - Gentoo: **1.0000**.
+
+4. **Negative Predictive Value (NPV)**:
+  - Proportion of correct negative classifications:
+    - Adelie: **1.0000**.
+    - Chinstrap: **0.9962**.
+    - Gentoo: **1.0000**.
+
+5. **Balanced Accuracy**:
+  - Average of sensitivity and specificity:
+    - Adelie: **0.9973**.
+    - Chinstrap: **0.9926**.
+    - Gentoo: **1.0000**.
+
+
+    The **model performs exceptionally well**, with an overall accuracy of **99.7%**. **Adelie and Gentoo species** are perfectly classified (Sensitivity = 1.0). **Chinstrap species** has a small margin for improvement, with **98.53% sensitivity** and **100% specificity**. **Kappa = 0.9953** suggests near-perfect agreement between predictions and the actual labels. With such high performance metrics, the Random Forest model is highly effective for this classification task and provides reliable results.
