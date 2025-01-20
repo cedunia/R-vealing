@@ -1,0 +1,276 @@
+---
+title: "Enhancing Classification with Boosting Techniques: Classifying Palmer Penguins"
+description: |
+  Learn how to apply Boosting algorithms to classify penguin species using the Palmer Penguins dataset. This tutorial walks through data preparation, model construction with Gradient Boosting, cross-validation evaluation, performance analysis, and hyperparameter tuning, showcasing the effectiveness of Boosting methods in improving classification accuracy.
+author:
+  - name: Cédric Hassen-Khodja
+    url: {}
+date: 2025-01-17
+categories:
+  - [Machine Learning]
+  - [Classification]
+  - [Boosting]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+required_packages <- c("caret", "xgboost", "palmerpenguins", "dplyr", "ggplot2")
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if(length(new_packages) > 0) install.packages(new_packages)
+library(caret)
+library(xgboost)
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+```
+
+## Introduction
+
+Boosting algorithms have become a cornerstone in the field of machine learning, known for their ability to enhance model performance by combining weak learners into a strong ensemble. In this tutorial, we will explore how to apply **Gradient Boosting** using the `xgboost` package in R to classify penguin species from the **Palmer Penguins** dataset. We will cover data preparation, model building, evaluation through cross-validation, performance interpretation, and hyperparameter tuning, demonstrating the superior accuracy Boosting techniques can achieve in classification tasks.
+
+## Data Preparation
+
+As with any machine learning task, proper data preparation is crucial. We will start by cleaning the dataset, handling missing values, and encoding categorical variables appropriately for the Boosting model.
+
+```{r data-prep}
+data("penguins")
+penguins_clean <- penguins %>%
+  filter(!is.na(species),
+         !is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g),
+         !is.na(sex),
+         !is.na(island)) %>%
+  mutate(
+    species = as.factor(species),
+    island = as.factor(island),
+    sex = as.factor(sex)
+  )
+
+#Quick preview of the cleaned data
+head(penguins_clean)
+```
+
+### Feature Engineering
+
+Boosting algorithms like XGBoost require numerical input. Therefore, we need to convert categorical variables into numerical formats using one-hot encoding.
+
+```{r feature-engineering}
+# One-hot encode categorial variables
+penguins_numeric <- penguins_clean %>%
+  select(-species) %>%
+  mutate_if(is.factor, as.numeric)
+
+# Convert species to numerical labels
+species_labels <- as.numeric(penguins_clean$species) - 1  # XGBoost requires labels starting from 0
+
+# Prepare the final dataset
+dataset <- as.matrix(penguins_numeric)
+```
+
+## Building a Gradient Boosting Model with XGBoost
+
+We will utilize the `xgboost` package to construct a Gradient Boosting model. Our target variable is `species`, and our predictors include `island`, `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g`, and `sex`.
+
+```{r model-build}
+# Set a seed for reproductibility
+set.seed(123)
+
+# Define parameters for XGBoost
+params <- list(
+  objective = "multi:softprob",
+  num_class = length(unique(species_labels)),
+  eval_metric = "mlogloss"
+)
+
+# Convert data into DMatrix format
+dtrain <- xgb.DMatrix(data = dataset, label = species_labels)
+
+# Train the initial XGBoost model
+xgb_model <- xgb.train(
+  params = params,
+  data = dtrain,
+  nrounds = 100,
+  watchlist = list(train = dtrain),
+  verbose = 0
+)
+
+print(xgb_model)
+```
+
+### Initial Interpretation
+
+- **nrounds=100**: The model is trained for 100 bossting iterations.
+- **objective="multi:softprob"**: Specifies a multi-class classification task, outputting probabilities for each class.
+- **num_class=3**: There are three penguin species to classify.
+- **eval_metric="mlogloss"**: The model is evaluated using multi-class logarithmic loss.
+
+## Feature Importance
+
+Understanding which features contribute most to the model's predictions cn provide valable insights. XGBoost offers built-in methods to assess feature importance.
+
+```{r feature-importance}
+importance_matrix <- xgb.importance(feature_names = colnames(dataset),
+                                    model = xgb_model)
+print(importance_matrix)
+xgb.plot.importance(importance_matrix, main = "Feature Importance in XGBoost Model (Penguins)")
+```
+
+- **Gain**: The improvement in accuracy brought by a feature to the branches it is on. Higher gain indicates more important features.
+- **Cover**: The number of observations related to the feature. Higher cover means the feature is used in many splits.
+- **Frequency**: The number of times a feature is used in all generated trees.
+
+### Overall Interpretation
+
+- **bill_length_mm** and **flipper_length_mm** are the most influential features, contributing significantly to species classification.
+- **body_mass_g** and **sex** have lower importance, indicating they are less critical for distinguishing between species.
+
+## Model Evaluation via Cross-Validation
+
+To ensure the model's robustness and to prevent overfitting, we perform cross-validation using the `caret` package. We will also tune key hyperparameters to optimize model performance.
+
+```{r model-eval}
+# Define cross-validation method
+fitControl <- trainControl(
+  method = "cv",
+  number = 5,
+  verboseIter = FALSE,
+  allowParallel = TRUE
+)
+
+# Define a grid of hyperparameters to search
+tuneGrid <- expand.grid(
+  nrounds = c(100, 200),
+  max_depth = c(3, 6, 9),
+  eta = c(0.01, 0.1, 0.3),
+  gamma = 0,
+  colsample_bytree = 0.8,
+  min_child_weight = 1,
+  subsample = 0.8
+)
+
+# Train the model using caret with XGBoost
+set.seed(123)
+xgb_cv <- train(
+  x = dataset,
+  y = species_labels,
+  method = "xgbTree",
+  trControl = fitControl,
+  tuneGrid = tuneGrid,
+  verbose = FALSE
+)
+
+print(xgb_cv)
+```
+### Interpreting the Results
+
+- **RMSE (Root Mean Squared Error)** measures the average magnitude of prediction errors.
+- **Rsquared** indicates the proportion of variance explained by the model.
+- **MAE (Mean Absolute Error)** represents the average absolute difference between predicted and actual values.
+
+- The learning rate (eta) of 0.10 provided strong performance, with very low RMSE and MAE values.
+- The max_depth of 3 provided a relatively simple model that avoided overfitting.
+- Performance metrics (RMSE, Rsquared, and MAE) all indicate that the model has excellent predictive power with low error and high explained variance.
+
+This indicates that the chosen model is likely to generalize well to new data with minimal error.
+
+## Optimal Boosting Model
+
+Based on cross-validation results, we select the best hyperparameters and train the final model.
+
+```{r optimal-model}
+# Extract the best hyperparameters
+best_params <- xgb_cv$bestTune
+
+# Update parameters with the best hyperparameters
+params_optimal <- list(
+  objective = "multi:softprob",
+  num_class = length(unique(species_labels)),
+  eval_metric = "mlogloss",
+  max_depth = best_params$max_depth,
+  eta = best_params$eta,
+  gamma = best_params$gamma,
+  colsample_bytree = best_params$colsample_bytree,
+  min_child_weight = best_params$min_child_weight,
+  subsample = best_params$subsample
+)
+
+# Train the optimal XGBoost model
+set.seed(123)
+xgb_optimal <- xgb.train(
+  params = params_optimal,
+  data = dtrain,
+  nrounds = best_params$nrounds,
+  watchlist = list(train = dtrain),
+  verbose = 0
+)
+
+print(xgb_optimal)
+```
+
+This final model incorporates the optimal hyperparameters determined through cross-validation, ensuring enhanced performance and generalization.
+
+## Final Evaluation
+
+To assess the performance of the optimal model, we generate predictions and evaluate them using a confusion matrix and additional metrics.
+
+```{r final-eval}
+# Generate predictions
+pred_probs <- predict(xgb_optimal, dataset)
+pred_matrix <- matrix(pred_probs, ncol = length(unique(species_labels)), byrow = TRUE)
+predictions <- max.col(pred_matrix) - 1  # Convert probabilities to class labels
+
+# Convert numerical labels back to factor
+pred_species <- factor(predictions, levels = 0:(length(unique(species_labels)) - 1), labels = levels(penguins_clean$species))
+
+# Actual species
+actual_species <- penguins_clean$species
+
+# Generate confusion matrix
+conf_mat <- confusionMatrix(pred_species, actual_species)
+print(conf_mat)
+```
+
+### Overall Statistics
+
+These metrics provide a comprehensive view of the model's performance:
+
+1. **Accuracy**:
+   - Proportion of correct predictions: **100%**.
+   - Indicates that the model correctly classifies 100% of the penguin species in the dataset.
+
+2. **Kappa**:
+   - **1**, reflecting excellent agreement between predictions and actual classifications beyond chance.
+
+3. **No Information Rate (NIR)**:
+   - Represents the accuracy that could be achieved by always predicting the most frequent class (Adelie: 43.84%).
+   - The model significantly outperforms this baseline.
+
+4. **P-value**:
+   - Indicates that the model's accuracy is significantly better than random chance (**P < 2.2e-16**).
+
+### Confusion Matrix Visualization
+
+```{r confusion-matrix-plot, echo=FALSE, fig.height=6, fig.width=6}
+library(caret)
+library(ggplot2)
+
+# Convert confusion matrix to dataframe for plotting
+conf_df <- as.data.frame(conf_mat$table)
+colnames(conf_df) <- c("Reference", "Prediction", "Freq")
+
+ggplot(data = conf_df, aes(x = Reference, y = Prediction, fill = Freq)) +
+  geom_tile() +
+  geom_text(aes(label = Freq), color = "white", size = 6) +
+  scale_fill_gradient(low = "blue", high = "red") +
+  labs(title = "Confusion Matrix for XGBoost Model (Penguins)", x = "Actual Species", y = "Predicted Species") +
+  theme_minimal()
+```
+
+    The **Gradient Boosting** model implemented using `xgboost` demonstrates exceptional performance in classifying penguin species within the Palmer Penguins dataset. With an overall accuracy of **99.5%** and near-perfect Kappa, the Boosting approach significantly outperforms baseline models and effectively captures the complex relationships between features.
