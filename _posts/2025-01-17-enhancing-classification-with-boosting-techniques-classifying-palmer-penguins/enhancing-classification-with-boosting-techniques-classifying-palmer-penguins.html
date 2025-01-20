@@ -118,7 +118,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/figure-html5/confusion-matrix-plot-1.png","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/figure-html5/feature-importance-1.png"]}
+  {"type":"character","attributes":{},"value":["enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/anchor-4.2.2/anchor.min.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/bowser-1.9.3/bowser.min.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/distill-2.2.21/template.v2.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/figure-html5/confusion-matrix-plot-1.png","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/figure-html5/feature-importance-1.png","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/header-attrs-2.28/header-attrs.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/jquery-3.6.0/jquery-3.6.0.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/jquery-3.6.0/jquery-3.6.0.min.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/jquery-3.6.0/jquery-3.6.0.min.map","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/popper-2.6.0/popper.min.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/tippy-6.2.7/tippy-bundle.umd.min.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/tippy-6.2.7/tippy-light-border.css","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/tippy-6.2.7/tippy.css","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/tippy-6.2.7/tippy.umd.min.js","enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1556,6 +1556,25 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h2 id="data-preparation">Data Preparation</h2>
 <p>As with any machine learning task, proper data preparation is crucial. We will start by cleaning the dataset, handling missing values, and encoding categorical variables appropriately for the Boosting model.</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"penguins"</span><span class='op'>)</span></span>
+<span><span class='va'>penguins_clean</span> <span class='op'>&lt;-</span> <span class='va'>penguins</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>species</span><span class='op'>)</span>,</span>
+<span>         <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>bill_length_mm</span><span class='op'>)</span>,</span>
+<span>         <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>bill_depth_mm</span><span class='op'>)</span>,</span>
+<span>         <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>flipper_length_mm</span><span class='op'>)</span>,</span>
+<span>         <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>body_mass_g</span><span class='op'>)</span>,</span>
+<span>         <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>sex</span><span class='op'>)</span>,</span>
+<span>         <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>island</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span></span>
+<span>    species <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>species</span><span class='op'>)</span>,</span>
+<span>    island <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>island</span><span class='op'>)</span>,</span>
+<span>    sex <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>sex</span><span class='op'>)</span></span>
+<span>  <span class='op'>)</span></span>
+<span></span>
+<span><span class='co'>#Quick preview of the cleaned data</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>penguins_clean</span><span class='op'>)</span></span></code></pre>
+</div>
 <pre><code># A tibble: 6 × 8
   species island    bill_length_mm bill_depth_mm flipper_length_mm
   &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;
@@ -1570,11 +1589,47 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h3 id="feature-engineering">Feature Engineering</h3>
 <p>Boosting algorithms like XGBoost require numerical input. Therefore, we need to convert categorical variables into numerical formats using one-hot encoding.</p>
 <div class="layout-chunk" data-layout="l-body">
-
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># One-hot encode categorial variables</span></span>
+<span><span class='va'>penguins_numeric</span> <span class='op'>&lt;-</span> <span class='va'>penguins_clean</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>species</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate_all.html'>mutate_if</a></span><span class='op'>(</span><span class='va'>is.factor</span>, <span class='va'>as.numeric</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Convert species to numerical labels</span></span>
+<span><span class='va'>species_labels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>penguins_clean</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span>  <span class='co'># XGBoost requires labels starting from 0</span></span>
+<span></span>
+<span><span class='co'># Prepare the final dataset</span></span>
+<span><span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>penguins_numeric</span><span class='op'>)</span></span></code></pre>
+</div>
 </div>
 <h2 id="building-a-gradient-boosting-model-with-xgboost">Building a Gradient Boosting Model with XGBoost</h2>
 <p>We will utilize the <code>xgboost</code> package to construct a Gradient Boosting model. Our target variable is <code>species</code>, and our predictors include <code>island</code>, <code>bill_length_mm</code>, <code>bill_depth_mm</code>, <code>flipper_length_mm</code>, <code>body_mass_g</code>, and <code>sex</code>.</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Set a seed for reproductibility</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Define parameters for XGBoost</span></span>
+<span><span class='va'>params</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span>  objective <span class='op'>=</span> <span class='st'>"multi:softprob"</span>,</span>
+<span>  num_class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>species_labels</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span>  eval_metric <span class='op'>=</span> <span class='st'>"mlogloss"</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Convert data into DMatrix format</span></span>
+<span><span class='va'>dtrain</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.DMatrix.html'>xgb.DMatrix</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>dataset</span>, label <span class='op'>=</span> <span class='va'>species_labels</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Train the initial XGBoost model</span></span>
+<span><span class='va'>xgb_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgb.train</a></span><span class='op'>(</span></span>
+<span>  params <span class='op'>=</span> <span class='va'>params</span>,</span>
+<span>  data <span class='op'>=</span> <span class='va'>dtrain</span>,</span>
+<span>  nrounds <span class='op'>=</span> <span class='fl'>100</span>,</span>
+<span>  watchlist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>train <span class='op'>=</span> <span class='va'>dtrain</span><span class='op'>)</span>,</span>
+<span>  verbose <span class='op'>=</span> <span class='fl'>0</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>xgb_model</span><span class='op'>)</span></span></code></pre>
+</div>
 <pre><code>##### xgb.Booster
 raw: 234.2 Kb 
 call:
@@ -1608,6 +1663,11 @@ evaluation_log:
 <h2 id="feature-importance">Feature Importance</h2>
 <p>Understanding which features contribute most to the model’s predictions cn provide valable insights. XGBoost offers built-in methods to assess feature importance.</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>importance_matrix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.importance.html'>xgb.importance</a></span><span class='op'>(</span>feature_names <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>)</span>,</span>
+<span>                                    model <span class='op'>=</span> <span class='va'>xgb_model</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>importance_matrix</span><span class='op'>)</span></span></code></pre>
+</div>
 <pre><code>             Feature        Gain      Cover  Frequency
               &lt;char&gt;       &lt;num&gt;      &lt;num&gt;      &lt;num&gt;
 1:    bill_length_mm 0.466735270 0.32650709 0.33489461
@@ -1616,6 +1676,9 @@ evaluation_log:
 4:     bill_depth_mm 0.049492476 0.27046588 0.33957845
 5:               sex 0.006699020 0.00336728 0.01405152
 6:       body_mass_g 0.002686226 0.03171228 0.14051522</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.plot.importance.html'>xgb.plot.importance</a></span><span class='op'>(</span><span class='va'>importance_matrix</span>, main <span class='op'>=</span> <span class='st'>"Feature Importance in XGBoost Model (Penguins)"</span><span class='op'>)</span></span></code></pre>
+</div>
 <p><img src="enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/figure-html5/feature-importance-1.png" width="624" /></p>
 </div>
 <ul>
@@ -1631,51 +1694,85 @@ evaluation_log:
 <h2 id="model-evaluation-via-cross-validation">Model Evaluation via Cross-Validation</h2>
 <p>To ensure the model’s robustness and to prevent overfitting, we perform cross-validation using the <code>caret</code> package. We will also tune key hyperparameters to optimize model performance.</p>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code>[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:07] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:07] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:07] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:07] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
-[18:23:07] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Define cross-validation method</span></span>
+<span><span class='va'>fitControl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/caret/man/trainControl.html'>trainControl</a></span><span class='op'>(</span></span>
+<span>  method <span class='op'>=</span> <span class='st'>"cv"</span>,</span>
+<span>  number <span class='op'>=</span> <span class='fl'>5</span>,</span>
+<span>  verboseIter <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
+<span>  allowParallel <span class='op'>=</span> <span class='cn'>TRUE</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Define a grid of hyperparameters to search</span></span>
+<span><span class='va'>tuneGrid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span></span>
+<span>  nrounds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>200</span><span class='op'>)</span>,</span>
+<span>  max_depth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>9</span><span class='op'>)</span>,</span>
+<span>  eta <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.01</span>, <span class='fl'>0.1</span>, <span class='fl'>0.3</span><span class='op'>)</span>,</span>
+<span>  gamma <span class='op'>=</span> <span class='fl'>0</span>,</span>
+<span>  colsample_bytree <span class='op'>=</span> <span class='fl'>0.8</span>,</span>
+<span>  min_child_weight <span class='op'>=</span> <span class='fl'>1</span>,</span>
+<span>  subsample <span class='op'>=</span> <span class='fl'>0.8</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Train the model using caret with XGBoost</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+<span><span class='va'>xgb_cv</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/caret/man/train.html'>train</a></span><span class='op'>(</span></span>
+<span>  x <span class='op'>=</span> <span class='va'>dataset</span>,</span>
+<span>  y <span class='op'>=</span> <span class='va'>species_labels</span>,</span>
+<span>  method <span class='op'>=</span> <span class='st'>"xgbTree"</span>,</span>
+<span>  trControl <span class='op'>=</span> <span class='va'>fitControl</span>,</span>
+<span>  tuneGrid <span class='op'>=</span> <span class='va'>tuneGrid</span>,</span>
+<span>  verbose <span class='op'>=</span> <span class='cn'>FALSE</span></span>
+<span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:03] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:04] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:05] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.
+[10:07:06] WARNING: src/c_api/c_api.cc:935: `ntree_limit` is deprecated, use `iteration_range` instead.</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>xgb_cv</span><span class='op'>)</span></span></code></pre>
+</div>
 <pre><code>eXtreme Gradient Boosting 
 
 333 samples
@@ -1728,6 +1825,35 @@ The final values used for the model were nrounds = 100, max_depth
 <h2 id="optimal-boosting-model">Optimal Boosting Model</h2>
 <p>Based on cross-validation results, we select the best hyperparameters and train the final model.</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Extract the best hyperparameters</span></span>
+<span><span class='va'>best_params</span> <span class='op'>&lt;-</span> <span class='va'>xgb_cv</span><span class='op'>$</span><span class='va'>bestTune</span></span>
+<span></span>
+<span><span class='co'># Update parameters with the best hyperparameters</span></span>
+<span><span class='va'>params_optimal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span>  objective <span class='op'>=</span> <span class='st'>"multi:softprob"</span>,</span>
+<span>  num_class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>species_labels</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span>  eval_metric <span class='op'>=</span> <span class='st'>"mlogloss"</span>,</span>
+<span>  max_depth <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>max_depth</span>,</span>
+<span>  eta <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>eta</span>,</span>
+<span>  gamma <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>gamma</span>,</span>
+<span>  colsample_bytree <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>colsample_bytree</span>,</span>
+<span>  min_child_weight <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>min_child_weight</span>,</span>
+<span>  subsample <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>subsample</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Train the optimal XGBoost model</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+<span><span class='va'>xgb_optimal</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgb.train</a></span><span class='op'>(</span></span>
+<span>  params <span class='op'>=</span> <span class='va'>params_optimal</span>,</span>
+<span>  data <span class='op'>=</span> <span class='va'>dtrain</span>,</span>
+<span>  nrounds <span class='op'>=</span> <span class='va'>best_params</span><span class='op'>$</span><span class='va'>nrounds</span>,</span>
+<span>  watchlist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>train <span class='op'>=</span> <span class='va'>dtrain</span><span class='op'>)</span>,</span>
+<span>  verbose <span class='op'>=</span> <span class='fl'>0</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>xgb_optimal</span><span class='op'>)</span></span></code></pre>
+</div>
 <pre><code>##### xgb.Booster
 raw: 263.6 Kb 
 call:
@@ -1755,6 +1881,22 @@ evaluation_log:
 <h2 id="final-evaluation">Final Evaluation</h2>
 <p>To assess the performance of the optimal model, we generate predictions and evaluate them using a confusion matrix and additional metrics.</p>
 <div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Generate predictions</span></span>
+<span><span class='va'>pred_probs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>xgb_optimal</span>, <span class='va'>dataset</span><span class='op'>)</span></span>
+<span><span class='va'>pred_matrix</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='va'>pred_probs</span>, ncol <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>species_labels</span><span class='op'>)</span><span class='op'>)</span>, byrow <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span><span class='va'>predictions</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/maxCol.html'>max.col</a></span><span class='op'>(</span><span class='va'>pred_matrix</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span>  <span class='co'># Convert probabilities to class labels</span></span>
+<span></span>
+<span><span class='co'># Convert numerical labels back to factor</span></span>
+<span><span class='va'>pred_species</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>predictions</span>, levels <span class='op'>=</span> <span class='fl'>0</span><span class='op'>:</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='va'>species_labels</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span>, labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/levels.html'>levels</a></span><span class='op'>(</span><span class='va'>penguins_clean</span><span class='op'>$</span><span class='va'>species</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Actual species</span></span>
+<span><span class='va'>actual_species</span> <span class='op'>&lt;-</span> <span class='va'>penguins_clean</span><span class='op'>$</span><span class='va'>species</span></span>
+<span></span>
+<span><span class='co'># Generate confusion matrix</span></span>
+<span><span class='va'>conf_mat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/caret/man/confusionMatrix.html'>confusionMatrix</a></span><span class='op'>(</span><span class='va'>pred_species</span>, <span class='va'>actual_species</span><span class='op'>)</span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>conf_mat</span><span class='op'>)</span></span></code></pre>
+</div>
 <pre><code>Confusion Matrix and Statistics
 
            Reference
@@ -1812,8 +1954,12 @@ Balanced Accuracy           1.0000           1.0000        1.0000</code></pre>
 <div class="layout-chunk" data-layout="l-body">
 <p><img src="enhancing-classification-with-boosting-techniques-classifying-palmer-penguins_files/figure-html5/confusion-matrix-plot-1.png" width="576" /></p>
 </div>
-<pre><code>The **Gradient Boosting** model implemented using `xgboost` demonstrates exceptional performance in classifying penguin species within the Palmer Penguins dataset. With an overall accuracy of **99.5%** and near-perfect Kappa, the Boosting approach significantly outperforms baseline models and effectively captures the complex relationships between features.</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>The <strong>Gradient Boosting</strong> model implemented using <code>xgboost</code> demonstrates
+exceptional performance in classifying penguin species within the Palmer
+Penguins dataset. With an overall accuracy of <strong>99.5%</strong> and near-perfect
+Kappa, the Boosting approach significantly outperforms baseline models and
+effectively captures the complex relationships between features.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

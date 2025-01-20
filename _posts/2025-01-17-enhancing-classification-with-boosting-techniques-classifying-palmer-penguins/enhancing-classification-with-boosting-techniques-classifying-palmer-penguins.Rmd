@@ -18,7 +18,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 required_packages <- c("caret", "xgboost", "palmerpenguins", "dplyr", "ggplot2")
 new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
 if(length(new_packages) > 0) install.packages(new_packages)
@@ -269,8 +269,14 @@ ggplot(data = conf_df, aes(x = Reference, y = Prediction, fill = Freq)) +
   geom_tile() +
   geom_text(aes(label = Freq), color = "white", size = 6) +
   scale_fill_gradient(low = "blue", high = "red") +
-  labs(title = "Confusion Matrix for XGBoost Model (Penguins)", x = "Actual Species", y = "Predicted Species") +
+  labs(title = "Confusion Matrix for XGBoost Model (Penguins)", 
+       x = "Actual Species", y = "Predicted Species") +
   theme_minimal()
 ```
 
-    The **Gradient Boosting** model implemented using `xgboost` demonstrates exceptional performance in classifying penguin species within the Palmer Penguins dataset. With an overall accuracy of **99.5%** and near-perfect Kappa, the Boosting approach significantly outperforms baseline models and effectively captures the complex relationships between features.
+
+The **Gradient Boosting** model implemented using `xgboost` demonstrates 
+exceptional performance in classifying penguin species within the Palmer 
+Penguins dataset. With an overall accuracy of **99.5%** and near-perfect 
+Kappa, the Boosting approach significantly outperforms baseline models and 
+effectively captures the complex relationships between features.
