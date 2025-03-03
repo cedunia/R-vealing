@@ -1,0 +1,163 @@
+---
+title: "Enhancing Classification with K-Nearest Neighbors: Classifying Palmer Penguins"
+description: |
+  Learn how to apply the K-Nearest Neighbors algorithm to classify penguin species using the Palmer Penguins dataset. This tutorial walks through data preparation, model construction with KNN, cross-validation evaluation, performance analysis, and visualization, showcasing the effectiveness of KNN in classification tasks.
+author:
+  - name: Cédric Hassen-Khodja
+    url: {}
+date: 2025-03-03
+categories:
+  - [Machine Learning]
+  - [Classification]
+  - [KNN]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+required_packages <- c("caret", "palmerpenguins", "dplyr", "ggplot2")
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if(length(new_packages) > 0) install.packages(new_packages)
+library(caret)
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+```
+
+## Introduction
+
+K-Nearest Neighbors (KNN) is a simple yet effective supervised learning algorithm that classifies observations based on the majority class among their *k* closest neighbors in the feature space. In this tutorial, we will apply KNN to classify penguin species using the **Palmer Penguins** dataset. We will cover data preparation, feature engineering, model construction, cross-validation evaluation, performance analysis, and visualization, demonstrating how KNN can effectively address classification tasks.
+
+## Data Preparation
+
+Proper data preparation is essential for any machine learning workflow. We start by loading the Palmer Penguins dataset and cleaning it by removing rows with missing values. We then convert relevant columns to factors.
+
+```{r data-prep}
+data("penguins", package = "palmerpenguins")
+penguins_clean <- penguins %>%
+  filter(!is.na(species),
+         !is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(body_mass_g),
+         !is.na(sex),
+         !is.na(island)) %>%
+  mutate(
+    species = as.factor(species),
+    island = as.factor(island),
+    sex = as.factor(sex)
+  )
+
+#Quck preview of the cleaned data
+head(penguins_clean)
+```
+
+## Feature Engineering
+
+KNN relies on distance matrix, so it is crucial that all features are numeric and scaled. We use one-hot encoding for categorical predictors (e.g., island and sex) and standardize the features.
+
+```{r feature-engineering}
+# One-hot encode categorical variables using caret's dummyVars
+dummy_model <- dummyVars("~ .", data = penguins_clean[, -which(names(penguins_clean) == "species")])
+penguins_numeric <- as.data.frame(predict(dummy_model, newdata = penguins_clean))
+
+# Standardize the predictors
+preProcValues <- preProcess(penguins_numeric, method = c("center", "scale"))
+penguins_scaled <- predict(preProcValues, penguins_numeric)
+
+# Final dataset: predictors and target variable
+predictors <- penguins_scaled
+target <- penguins_clean$species
+```
+
+## Splitting the Data
+
+We partition the dataset into training (70%) and testing (30%) sets to evaluate the performance of our KNN model.
+
+```{r data-split}
+set.seed(123)
+train_index <- createDataPartition(target, p = 0.7, list = FALSE)
+train_predictors <- predictors[train_index,]
+test_predictors <- predictors[-train_index,]
+train_target <- target[train_index]
+test_target <- target[-train_index]
+```
+
+## Building a K-Nearest Neighbors Model
+
+We use the `caret` package to train our KNN model. A grid search over various values of *k* (the numbers of neighbors) is performed using 5-fold cross-validation to identify the optimal hyperparameter.
+
+```{r model-build}
+# Define cross-validation method
+fitControl <- trainControl(method = "cv", number = 5)
+
+# Define a grid for tuning the number of neighbors
+knnGrid <- expand.grid(k = c(3, 5, 7, 9))
+
+# Train the KNN model using caret
+set.seed(1234)
+knn_model <- train(
+  x = train_predictors,
+  y = train_target,
+  method = "knn",
+  trControl = fitControl,
+  tuneGrid = knnGrid
+)
+
+print(knn_model)
+```
+
+### Model Interpretation
+
+- **k**: The number of nearest neighbors considered.
+- The cross-validation process selects the *k* values that minimizes the classification error on the training folds.
+
+## Model Evaluation
+
+With the optimal *k* determined, we generate predictions on the test set and evaluate our model's performance using a confusion matrix.
+
+```{r model-eval}
+# Generate predictions on the test set
+knn_predictions <- predict(knn_model, newdata = test_predictors)
+
+# Evaluate performance with a confusion matrix
+conf_mat <- confusionMatrix(knn_predictions, test_target)
+print(conf_mat)
+```
+
+### Performance Metrics
+
+The confusion matrix provides:
+- **Accuracy**: The proportion of correctly classified instances.
+- **Kappa Statistic**: A measure of agreement between predicted and actual classes, adjusted for chance.
+
+## Confusion Matrix Visualization
+
+Visualizing the confusion matrix helps to understand the distribution of correct and misclassified predictions.
+
+```{r confusion-matrix-plot, echo=FALSE, fig.height=6, fig.width=6}
+# Convert confusion matrix table to a data frame
+conf_df <- as.data.frame(conf_mat$table)
+colnames(conf_df) <- c("Reference", "Prediction", "Freq")
+
+ggplot(data = conf_df, aes(x = Reference, y = Prediction, fill = Freq)) +
+  geom_tile() +
+  geom_text(aes(label = Freq), color = "white", size = 6) +
+  scale_fill_gradient(low = "blue", high = "red") +
+  labs(title = "Confusion Matrix for KNN Model (Penguins)", 
+       x = "Actual Species", y = "Predicted Species") +
+  theme_minimal()
+```
+
+## Conclusion
+
+In this tutorial, we demonstrated a complete workflow for applying the **K-Nearest Neighbors (KNN)** algorithm to classify penguin species from the Palmer Penguins dataset. We covered:
+
+- Data cleaning and preparation.
+- Feature engineering including one-hot encoding and feature scaling.
+- Building a KNN model with cross-validation to tune the number of neighbors.
+- Evaluating model performance using a confusion matrix and key metrics.
+
+KNN is an intuitive method that works well when features are appropriately scaled. While it is simple to implement, careful attention to preprocessing and hyperparameter tuning is crucial for optimal performance. Experiment with different values of *k* and consider additional feature engineering for even better results.
