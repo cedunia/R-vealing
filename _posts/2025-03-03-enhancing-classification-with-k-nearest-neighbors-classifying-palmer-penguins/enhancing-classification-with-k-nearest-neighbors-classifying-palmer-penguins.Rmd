@@ -130,6 +130,7 @@ print(conf_mat)
 ### Performance Metrics
 
 The confusion matrix provides:
+
 - **Accuracy**: The proportion of correctly classified instances.
 - **Kappa Statistic**: A measure of agreement between predicted and actual classes, adjusted for chance.
 
