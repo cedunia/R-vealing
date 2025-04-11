@@ -1,0 +1,170 @@
+---
+title: "Clustering with K-Means: Uncovering Patterns in Unlabeled Data"
+description: |
+  Discover How to apply K-Means clustering to uncover hidden structure in the Palmer Penguins dataset. This tutorial walks through data preparation, feature engineering, choosing the optimal number of clusters, building the K-Means model, and interpreting results with visualization.
+author:
+  - name: Cédric Hassen-Khodja
+    url: {}
+date: 2025-04-11
+categories:
+  - [Machine Learning]
+  - [Unsupervised Learning]
+  - [Clustering]
+  - [KMeans]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+required_packages <- c("palmerpenguins", "dplyr", "ggplot2", "factoextra", "cluster", "gridExtra")
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if(length(new_packages) > 0) install.packages(new_packages)
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(factoextra)
+library(cluster)
+library(gridExtra)
+```
+
+## Introduction
+
+**K-Means** is a popular **unsupervised learning** algorithm that partitions data into *k* clusters by minimizing the variance within each cluster. It's useful when the dataset is **unlabeled**, and the goal is to discover hidden patterns or natural groupings in the data.   
+In this tutorial, we'll use the **Palmer Penguins** dataset to demonstrate a complete K-Means clustering workflow - from preprocessing to visualization.
+
+## Data Preparation
+
+We begin by loading and cleaning the data, retaining only numeric features relevant to clustering.
+
+```{r data-prep}
+data("penguins", package = "palmerpenguins")
+
+penguins_clean <- penguins %>%
+  filter(!is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g)) %>%
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+head(penguins_clean)
+```
+
+## Feature Scaling
+
+K-Means relies on Euclidean distances, so it's essential to scale the features.
+
+```{r scaling}
+penguins_scaled <- scale(penguins_clean)
+```
+
+## Choosing the Optimal Number of Clusters
+
+We'll use two common methods to choose the number of clusters:
+
+- **Elbow Method**
+- **Silhouette Method**
+
+```{r optimal-k}
+# Elbow method
+fviz_nbclust(penguins_scaled, kmeans, method = "wss") + 
+  ggtitle("Elbow Method")
+
+# Silhouette method
+fviz_nbclust(penguins_scaled, kmeans, method = "silhouette") + 
+  ggtitle("Silhouette Method")
+```
+
+### Interpreting the Results
+
+The elbow suggests that k = 3 is a good choice. It balances low within-cluster variance with model simplicity. Increasing k beyond 3 leads to diminishing returns.
+
+The silhouette method indicates that k = 2 yields the most well-defined and clearly separated clusters.
+
+> Based on the elbow and silhouette plots, let’s assume **k = 3** is a reasonable choice.
+
+## Running K-Means
+
+Let’s cluster the data using K-Means with `k = 3`.
+
+```{r kmeans-model}
+set.seed(42)
+kmeans_result <- kmeans(penguins_scaled, centers = 3, nstart = 25)
+kmeans_result
+```
+
+### Within cluster sum of squares (WCSS) explained
+
+The **within-cluster sum of squares (WCSS)** for each cluster measures how spread out the data points are **within that specific cluster**. It tells you **how tightly the data points are grouped** around the cluster center (centroid).
+
+### **What about `between_SS / total_SS = 72.3%`?**
+
+This value refers to the **proportion of total variance that is explained by the clustering**.
+
+- **total_SS**: Total sum of squares = variance in the entire dataset (before clustering).
+- **between_SS**: The amount of variance **explained by the separation between clusters**.
+- **within_SS**: What's left over — the variance **inside the clusters**.
+
+So:
+```
+between_SS / total_SS = 72.3%
+```
+
+➡️ This means that **72.3%** of the total variance in the dataset is explained by the differences **between** the 3 clusters.
+
+**The higher this ratio, the better the clustering** — it means more of the data structure is captured by the cluster separation.
+
+## Visualizing the Clusters
+
+We project the data into 2D using Principal Component Analysis (PCA) and plot the clusters.
+
+```{r cluster-viz}
+fviz_cluster(kmeans_result, data = penguins_scaled,
+             geom = "point", ellipse.type = "norm", repel = TRUE,
+             palette = "jco", ggtheme = theme_minimal())
+```
+
+### Interpretation
+
+Each point represents a penguin, colored by its assigned cluster. K-Means attempts to group similar individuals based on their morphometric traits.
+
+Let’s check how the clusters compare to actual species (if we wanted to inspect that, though K-Means is unsupervised):
+
+```{r compare-to-species}
+penguins_compare <- penguins %>%
+  filter(!is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g)) %>%
+  mutate(cluster = as.factor(kmeans_result$cluster),
+         species = as.factor(species))
+
+ggplot(penguins_compare, aes(x = species, fill = cluster)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Distribution of K-Means Clusters by Actual Species",
+       x = "Penguin Species", y = "Count") +
+  theme_minimal()
+```
+
+> While K-Means doesn't use species labels, this plot helps assess whether discovered clusters align with known species.
+
+## Confusion Matrix Between Clusters and Actual Species
+
+```{r confusion-matrix}
+# First, align the same data used for clustering
+penguins_compare <- penguins %>%
+  filter(!is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g)) %>%
+  mutate(cluster = as.factor(kmeans_result$cluster),
+         species = as.factor(species))
+
+# Create a confusion matrix (contingency table)
+confusion_matrix <- table(penguins_compare$species, penguins_compare$cluster)
+print(confusion_matrix)
+```
+
+K-Means is a fast and intuitive way to explore structure in unlabeled data. For more complex structures or non-globular clusters, consider exploring other algorithms like DBSCAN or Gaussian Mixture Models.
