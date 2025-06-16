@@ -1,0 +1,177 @@
+---
+title: "Hierarchical Clustering: Revealing Nested Patterns in Unlabeled Data"
+description: |
+ Discover how to apply Hierarchical Clustering to unveil nested groupings in the Palmer Penguins dataset. This step-by-step guide covers data preparation, distance computation, dendrogram analysis, cluster selection, and results interpretation with clear visualizations.
+author:
+  - name: Cédric Hassen-Khodja
+    url: {}
+date: 2025-06-16
+categories:
+  - [Machine Learning]
+  - [Unsupervised Learning]
+  - [Clustering]
+  - [Hierarchical Clustering]
+  - [Visualization]
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+required_packages <- c("palmerpenguins", "dplyr", "ggplot2", "factoextra", "cluster", "gridExtra")
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if(length(new_packages) > 0) install.packages(new_packages)
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(factoextra)
+library(cluster)
+library(gridExtra)
+```
+
+## Introduction
+
+**Hierarchical clustering** is an unsupervised learning technique that builds a multilevel hierarchy of clusters by either merging smaller clusters into larger ones (**agglomerative**, the most common) or splitting larger clusters into smaller ones (**divisive**).
+Unlike K-Means, you don't need to specify the number of clusters in advance—**the dendrogram lets you choose the most meaningful groupings visually**.
+
+In this tutorial, we’ll explore hierarchical clustering on the **Palmer Penguins** dataset, from distance calculation to dendrogram interpretation and cluster assignment.
+
+## Data Preparation
+
+We select the same four morphometric features as before, keeping only complete cases.
+
+```{r data-prep}
+data("penguins", package = "palmerpenguins")
+penguins_clean <- penguins %>%
+  filter(!is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g)) %>%
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+head(penguins_clean)
+```
+
+## Feature Scaling
+
+Hierarchical clustering is sensitive to the scale of the data.
+We standardize each variable.
+
+```{r scaling}
+penguins_scaled <- scale(penguins_clean)
+```
+
+## Computing the Distance Matrix
+
+Most hierarchical methods work with a distance (or dissimilarity) matrix.
+We use **Euclidean distance**, the default for continuous data.
+
+```{r dist-matrix}
+dist_matrix <- dist(penguins_scaled, method = "euclidean")
+```
+
+## Performing Hierarchical Clustering
+
+There are several linkage methods—*complete*, *average*, *single*, *ward*, etc.
+Here, we use **Ward’s method** (*ward.D2*), which tends to create compact, spherical clusters (similar in philosophy to K-Means).
+
+```{r hc-model}
+hc_ward <- hclust(dist_matrix, method = "ward.D2")
+```
+
+## Visualizing the Dendrogram
+
+The dendrogram is a tree that shows at each step which clusters are merged. The height represents the dissimilarity at which merges occur.
+
+```{r dendrogram-plot, fig.height=6}
+fviz_dend(hc_ward, k = 3, # show 3 clusters with colors
+          rect = TRUE,    # add rectangles around clusters
+          cex = 0.5,      # label size
+          k_colors = "jco",
+          main = "Dendrogram of Palmer Penguins (Ward's Method)")
+```
+
+### How to read a dendrogram?
+
+* **Each leaf** represents a data point (here, a penguin).
+* **Branches** are merged bottom-up, showing which clusters merge and at what distance (height).
+* **Cutting the dendrogram** at a chosen height determines the number of clusters.
+
+## Choosing the Number of Clusters
+
+You can “cut” the dendrogram at different heights to create different numbers of clusters.
+Let’s assign 3 clusters (to compare with K-Means and the known species):
+
+```{r cluster-cut}
+cluster_assignments <- cutree(hc_ward, k = 3)
+table(cluster_assignments)
+```
+
+## Visualizing Clusters in 2D (with PCA)
+
+Like with K-Means, we can project the data to 2 principal components and color the points by their hierarchical cluster.
+
+```{r pca-cluster-viz}
+fviz_cluster(list(data = penguins_scaled, cluster = cluster_assignments),
+             geom = "point", ellipse.type = "norm", repel = TRUE,
+             palette = "jco", ggtheme = theme_minimal(),
+             main = "Hierarchical Clusters on PCA Projection")
+```
+
+## Comparing to Actual Species
+
+Let’s see how well the clusters correspond to the known penguin species.
+
+```{r compare-to-species}
+penguins_compare <- penguins %>%
+  filter(!is.na(bill_length_mm),
+         !is.na(bill_depth_mm),
+         !is.na(flipper_length_mm),
+         !is.na(body_mass_g)) %>%
+  mutate(hc_cluster = as.factor(cluster_assignments),
+         species = as.factor(species))
+
+ggplot(penguins_compare, aes(x = species, fill = hc_cluster)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Distribution of Hierarchical Clusters by Actual Species",
+       x = "Penguin Species", y = "Count") +
+  theme_minimal()
+```
+
+## Confusion Matrix Between Clusters and Actual Species
+
+```{r confusion-matrix}
+confusion_matrix <- table(penguins_compare$species, penguins_compare$hc_cluster)
+print(confusion_matrix)
+```
+
+> **How well do clusters match species?**
+>
+> The confusion matrix shows that:
+>
+> * **Cluster 1** mostly groups *Adélie* penguins, but includes a few *Chinstrap*.
+> * **Cluster 2** is almost exclusively *Gentoo*.
+> * **Cluster 3** is mainly *Chinstrap*.
+>
+> This means hierarchical clustering, using only the morphometric features, manages to separate *Gentoo* and *Adélie* quite well, but *Chinstrap* are less distinct—some resemble *Adélie* in their measurements.
+>
+> This illustrates a key point: **unsupervised clustering is driven by numeric similarity, not by the biological label.** Differences in body size and beak shape explain the groupings, not the species name.
+
+## Interpreting the Results
+
+* **Hierarchical clustering** offers a full hierarchy of nested clusters—helpful for exploring patterns at different resolutions.
+* **No need to pre-specify** the number of clusters—you can experiment by “cutting” the dendrogram at different heights.
+* In this example, hierarchical clustering with Ward’s method finds natural groups that often (but not perfectly) align with the biological species.
+
+## When to Use Hierarchical Clustering?
+
+* When you want **nested groupings** or to explore data structure at multiple levels.
+* When the number of clusters is **not known in advance**.
+* For **small to medium** datasets (distance matrix becomes large for big datasets).
+
+**Limitations**:
+
+* Sensitive to outliers, scale, and the linkage criterion.
+* Not as scalable as K-Means for large datasets.
