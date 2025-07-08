@@ -1,5 +1,28 @@
 [
   {
+    "path": "posts/2025-07-08-dbscan-clustering-identifying-dense-regions-un-unlabeled-data/",
+    "title": "DBSCAN Clustering: Identifying Dense Regions un Unlabeled Data",
+    "description": "Learn to apply DBSCAN clustering to the Palmer Penguins dataset to identify natural clusters and outliers. This step-by-step guide covers data preparation, parameter tuning, visualization, and interpretation.",
+    "author": [
+      {
+        "name": "Cédric Hassen-Khodja",
+        "url": {}
+      }
+    ],
+    "date": "2025-07-08",
+    "categories": [
+      "Machine Learning",
+      "Unsupervised Learning",
+      "Clustering",
+      "DBSCAN",
+      "Visualization"
+    ],
+    "contents": "\nIntroduction\nDBSCAN (Density-Based Spatial Clustering of Applications with Noise) is a popular clustering algorithm that groups together points closely packed together while marking isolated points as outliers. Unlike K-Means or Hierarchical clustering, DBSCAN doesn’t require specifying the number of clusters in advance.\nIn this guide, we’ll explore DBSCAN on the Palmer Penguins dataset.\nData Preparation\nWe select four morphometric features, filtering out missing data.\n\n\ndata(\"penguins\", package = \"palmerpenguins\")\npenguins_clean <- penguins %>%\n  filter(!is.na(bill_length_mm),\n         !is.na(bill_depth_mm),\n         !is.na(flipper_length_mm),\n         !is.na(body_mass_g)) %>%\n  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)\n\nhead(penguins_clean)\n\n# A tibble: 6 × 4\n  bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n           <dbl>         <dbl>             <int>       <int>\n1           39.1          18.7               181        3750\n2           39.5          17.4               186        3800\n3           40.3          18                 195        3250\n4           36.7          19.3               193        3450\n5           39.3          20.6               190        3650\n6           38.9          17.8               181        3625\n\nFeature Scaling\nDBSCAN is sensitive to scale, so we standardize each variable.\n\n\npenguins_scaled <- scale(penguins_clean)\n\n\nDetermining DBSCAN Parameters\nDBSCAN has two parameters:\neps: radius around points.\nminPts: minimun number of points required to form a dense region.\nWe use a k-distance plot to choose eps, with minPts typically set to dimensionality + 1 (here 5).\n\n\nkNNdistplot(penguins_scaled, k = 5)\nabline(h = 0.55, col = \"red\", lty = 2)\n\n\n\nHere, we choose eps = 0.55 based on the “elbow” in the plot.\nApplying DBSCAN\n\n\ndbscan_result <- dbscan(penguins_scaled, eps = 0.55, minPts = 5)\ntable(dbscan_result$cluster)\n\n\n  0   1   2   3 \n 46 131 115  50 \n\nVisualizing DBSCAN Clusters with PCA\nWe project the clusters onto 2 principal components.\n\n\nfviz_cluster(dbscan_result, data = penguins_scaled,\n             stand = FALSE, ellipse = TRUE, show.clust.cent = FALSE,\n             geom = \"point\", ggtheme = theme_minimal(),\n             main = \"DBSCAN Clusters on PCA Projection\")\n\n\n\nComparing DBSCAN Clusters to Species\nLet’s assess cluster quality by comparing them to actual species labels.\n\n\npenguins_compare <- penguins %>%\n  filter(!is.na(bill_length_mm),\n         !is.na(bill_depth_mm),\n         !is.na(flipper_length_mm),\n         !is.na(body_mass_g)) %>%\n  mutate(dbscan_cluster = factor(dbscan_result$cluster),\n         species = factor(species))\n\nggplot(penguins_compare, aes(x = species, fill = dbscan_cluster)) +\n  geom_bar(position = \"dodge\") +\n  labs(title = \"DBSCAN Clusters vs Actual Species\",\n       x = \"Penguin Species\", y = \"Count\") +\n  theme_minimal()\n\n\n\nConfusion Matrix\n\n\nconfusion_matrix <- table(penguins_compare$species, penguins_compare$dbscan_cluster)\nprint(confusion_matrix)\n\n           \n              0   1   2   3\n  Adelie     24 127   0   0\n  Chinstrap  14   4   0  50\n  Gentoo      8   0 115   0\n\nInterpretation\nDBSCAN identifies clusters based on density, effectively distinguishing regions of similar penguins. Points labeled as 0 represent outliers or ambiguous individuals. The confusion matrix highlights the following:\nClusters generally align well with the actual penguin species, with clear separation for most individuals.\nHowever, DBSCAN appears slightly less effective than K-Means or Hierarchical clustering due to its sensitivity to local density variations, resulting in some penguins being incorrectly classified as outliers or placed into less precise clusters.\nWhen to Use DBSCAN?\nWhen data has varying cluster densities.\nWhen handling noisy data and outliers.\nWhen the number of clusters is unknown or difficult to determine in advance.\nLimitations:\nSensitive to choice of parameters.\nCan struggle with very high-dimensional data.\nDBSCAN is a powerful, intuitive method for uncovering meaningful clusters without predefining their number.\n\n\n\n",
+    "preview": "posts/2025-07-08-dbscan-clustering-identifying-dense-regions-un-unlabeled-data/dbscan-clustering-identifying-dense-regions-un-unlabeled-data_files/figure-html5/k-dist-plot-1.png",
+    "last_modified": "2025-07-08T13:36:45+02:00",
+    "input_file": "dbscan-clustering-identifying-dense-regions-un-unlabeled-data.knit.md"
+  },
+  {
     "path": "posts/2025-06-16-hierarchical-clustering-revealing-nested-patterns-in-unlabeled-data/",
     "title": "Hierarchical Clustering: Revealing Nested Patterns in Unlabeled Data",
     "description": "Discover how to apply Hierarchical Clustering to unveil nested groupings in the Palmer Penguins dataset. This step-by-step guide covers data preparation, distance computation, dendrogram analysis, cluster selection, and results interpretation with clear visualizations.",
