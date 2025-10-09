@@ -1,5 +1,28 @@
 [
   {
+    "path": "posts/2025-08-01-hdbscan-clustering-discovering-variable-density-structures-in-unlabeled-data/",
+    "title": "HDBSCAN Clustering: Discovering Variable-Density Structures in Unlabeled Data",
+    "description": "Learn to apply HDBSCAN clustering to the Palmer Penguins dataset using only R. This step-by-step guide demonstrates how HDBSCAN improves over DBSCAN by automatically identifying clusters of varying densities and handling outliers.",
+    "author": [
+      {
+        "name": "Cédric Hassen-Khodja",
+        "url": {}
+      }
+    ],
+    "date": "2025-10-09",
+    "categories": [
+      "Machine Learning",
+      "Unsupervised Learning",
+      "Clustering",
+      "HDBSCAN",
+      "Visualization"
+    ],
+    "contents": "\nIntroduction\nHDBSCAN (Hierarchical Density-Based Spatial Clustering of Applications with Noise) is an extension of DBSCAN that removes the need to manually set eps, allows detection of clusters with varying densities, and better handles noise points.\nWe’ll explore its usage in R with the dbscan package on the Palmer Penguins dataset.\nData Preparation\n\n\ndata(\"penguins\", package = \"palmerpenguins\")\npenguins_clean <- penguins %>%\n  filter(!is.na(bill_length_mm),\n         !is.na(bill_depth_mm),\n         !is.na(flipper_length_mm),\n         !is.na(body_mass_g)) %>%\n  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)\n\nhead(penguins_clean)\n\n# A tibble: 6 × 4\n  bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n           <dbl>         <dbl>             <int>       <int>\n1           39.1          18.7               181        3750\n2           39.5          17.4               186        3800\n3           40.3          18                 195        3250\n4           36.7          19.3               193        3450\n5           39.3          20.6               190        3650\n6           38.9          17.8               181        3625\n\nFeature Scaling\n\n\npenguins_scaled <- scale(penguins_clean)\n\n\nRunning HDBSCAN\n\n\n# minPts = minimum number of points in a dense region (often set to 5)\nhdbscan_result <- hdbscan(penguins_scaled, minPts = 5)\n\n# Cluster labels (0 = noise)\ntable(hdbscan_result$cluster)\n\n\n  0   1   2 \n  2 122 218 \n\nAdd Cluster Info to Dataset\n\n\npenguins_compare <- penguins %>%\n  filter(!is.na(bill_length_mm),\n         !is.na(bill_depth_mm),\n         !is.na(flipper_length_mm),\n         !is.na(body_mass_g)) %>%\n  mutate(hdbscan_cluster = factor(hdbscan_result$cluster),\n         species = factor(species))\n\n\nVisualizing HDBSCAN Clusters with PCA\n\n\npca_res <- prcomp(penguins_scaled)\nautoplot(pca_res, data = penguins_compare, colour = 'hdbscan_cluster') +\n  labs(title = \"HDBSCAN Clusters on PCA Projection\") +\n  theme_minimal()\n\n\n\nComparing Clusters to True Species\n\n\nggplot(penguins_compare, aes(x = species, fill = hdbscan_cluster)) +\n  geom_bar(position = \"dodge\") +\n  labs(title = \"HDBSCAN Clusters vs Actual Species\",\n       x = \"Species\", y = \"Count\") +\n  theme_minimal()\n\n\n\nConfusion Matrix\n\n\ntable(penguins_compare$species, penguins_compare$hdbscan_cluster)\n\n           \n              0   1   2\n  Adelie      0   0 151\n  Chinstrap   1   0  67\n  Gentoo      1 122   0\n\nInterpretation\nHDBSCAN identifies clusters of variable density and automatically filters out noise (cluster 0). However, on the Palmer Penguins dataset, it only detected 2 clusters, whereas the ground truth contains 3 distinct species.\nWhy?\nSome species (e.g., Adelie and Chinstrap) are likely too morphometrically close to be reliably separated.\nAdjusting minPts (tested with values from 3 to 15) had little impact on the number or quality of clusters.\n\n🔍 Conclusion: On this dataset, HDBSCAN does not outperform DBSCAN, and tends to under-cluster due to overlapping densities. It is not always better and should be evaluated case by case.\n\nWhen to Use HDBSCAN?\nUse it when:\nClusters vary in shape and density.\nYou want to automatically infer the number of clusters.\nYou expect noise or ambiguous data points.\nLimitations:\nSensitive to local densities: may under-detect clusters if they are not well-separated.\nSlower than DBSCAN.\nCan fail to recover known groupings if the features are not well-discriminated.\nConclusion\nHDBSCAN offers a flexible alternative to DBSCAN, particularly useful when the number of clusters is unknown and densities vary. However, it is not guaranteed to yield better results, as shown here on the Palmer Penguins dataset where it failed to recover the 3 biological species. Clustering remains an exploratory task: no single method works best for all datasets.\n\n\n\n",
+    "preview": "posts/2025-08-01-hdbscan-clustering-discovering-variable-density-structures-in-unlabeled-data/hdbscan-clustering-discovering-variable-density-structures-in-unlabeled-data_files/figure-html5/pca-plot-1.png",
+    "last_modified": "2025-10-09T11:09:07+02:00",
+    "input_file": "hdbscan-clustering-discovering-variable-density-structures-in-unlabeled-data.knit.md"
+  },
+  {
     "path": "posts/2025-07-08-dbscan-clustering-identifying-dense-regions-un-unlabeled-data/",
     "title": "DBSCAN Clustering: Identifying Dense Regions un Unlabeled Data",
     "description": "Learn to apply DBSCAN clustering to the Palmer Penguins dataset to identify natural clusters and outliers. This step-by-step guide covers data preparation, parameter tuning, visualization, and interpretation.",
