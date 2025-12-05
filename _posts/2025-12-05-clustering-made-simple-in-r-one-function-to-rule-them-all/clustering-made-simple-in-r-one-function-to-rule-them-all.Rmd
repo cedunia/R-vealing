@@ -1,0 +1,401 @@
+---
+title: "Clustering Made Simple in R: One Function to Rule Them All"
+description: |
+  Learn how to build a generic R function that can apply multiple clustering algorithms (K-means, hierarchical clustering, DBSCAN, HDBSCAN, PAM) and automatically visualize results using PCA or UMAP. A practical, reusable tool designed for biologists and data analysts working with tabular data (imaging, omics, cytometry, etc.).
+author:
+  - name: Cédric Hassen-Khodja
+    url: {}
+date: 2025-12-05
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+required_packages <- c(
+  "palmerpenguins",
+  "dplyr",
+  "ggplot2",
+  "dbscan",
+  "uwot",
+  "tibble",
+  "cluster"
+)
+
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if (length(new_packages) > 0) install.packages(new_packages)
+
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbscan)
+library(uwot)
+library(tibble)
+library(cluster)
+
+```
+
+## Why a generic clustering function?
+
+If you work with **tabular data** (high-content imaging, omics, cytometry, single-cell, etc.), you’ve probably repeated this workflow many times:
+
+1. Pick a clustering method (K-means, HDBSCAN, DBSCAN, hierarchical, …)
+2. Standardize features
+3. Run the clustering
+4. Apply a dimensionality reduction (PCA, UMAP)
+5. Plot points in 2D, colored by cluster
+6. Repeat all of this when you switch method or dataset
+
+This is:
+
+* **Repetitive** (lots of copy-paste)
+* **Error-prone** (easy to forget scaling or change parameters)
+* Not very **reusable** across projects
+
+In this post, we’ll build **one generic R function** that:
+
+* Accepts a data frame (rows = objects, columns = features)
+* Supports several clustering methods:
+
+  * `"kmeans"`
+  * `"hclust"` (hierarchical clustering)
+  * `"dbscan"`
+  * `"hdbscan"`
+  * `"pam"` (partitioning around medoids)
+* Uses either `"PCA"` or `"UMAP"` for 2D visualization
+* Returns:
+
+  * The **original data with cluster labels**
+  * The **clustering model**
+  * The **2D embedding**
+  * A ready-to-use **`ggplot`**
+
+We’ll demonstrate it on the **Palmer Penguins** dataset.
+
+## Data preparation
+
+```{r data-prep}
+data("penguins", package = "palmerpenguins")
+
+penguins_clean <- penguins %>%
+  filter(
+    !is.na(bill_length_mm),
+    !is.na(bill_depth_mm),
+    !is.na(flipper_length_mm),
+    !is.na(body_mass_g)
+  )
+
+penguins_features <- penguins_clean %>%
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+head(penguins_features)
+```
+
+This is the kind of numeric table you would also get from:
+
+* Imaging analysis (per-cell or per-nucleus features)
+* Proteomics / transcriptomics (per-sample features)
+* Cytometry / single-cell pipelines
+
+## A generic `cluster_and_embed()` function
+
+Here is the core function. It:
+
+* Keeps **non-numeric columns** as metadata
+* Uses only **numeric columns** for clustering
+* Scales features (optional)
+* Applies **PCA** or **UMAP**
+* Runs the selected clustering method
+* Builds a 2D scatter plot colored by cluster
+
+```{r cluster-and-embed-fun}
+cluster_and_embed <- function(
+  data,
+  method = c("kmeans", "hclust", "dbscan", "hdbscan", "pam"),
+  dimred = c("PCA", "UMAP"),
+  k = NULL,                # for kmeans / hclust / pam
+  hclust_method = "ward.D2",
+  eps = NULL,              # for DBSCAN
+  minPts = 5,              # for DBSCAN / HDBSCAN
+  scale = TRUE,
+  seed = 123,
+  umap_n_neighbors = 15,
+  umap_min_dist = 0.1
+) {
+  method <- match.arg(method)
+  dimred <- match.arg(dimred)
+  
+  # Ensure data frame
+  data_input <- as.data.frame(data)
+  
+  # Keep numeric columns for clustering
+  num_cols <- sapply(data_input, is.numeric)
+  if (!all(num_cols)) {
+    warning(
+      "Non-numeric columns removed for clustering: ",
+      paste(names(data_input)[!num_cols], collapse = ", ")
+    )
+  }
+  data_numeric <- data_input[, num_cols, drop = FALSE]
+  
+  if (ncol(data_numeric) == 0) {
+    stop("No numeric columns available for clustering.")
+  }
+  
+  mat <- as.matrix(data_numeric)
+  if (scale) {
+    mat <- scale(mat)
+  }
+  
+  set.seed(seed)
+  
+  # ---- Dimensionality reduction ----
+  if (dimred == "PCA") {
+    dr <- prcomp(mat)
+    embed <- as.data.frame(dr$x[, 1:2, drop = FALSE])
+    colnames(embed) <- c("Dim1", "Dim2")
+    xlab <- "PC1"
+    ylab <- "PC2"
+  } else { # UMAP
+    embed_mat <- uwot::umap(
+      mat,
+      n_neighbors = umap_n_neighbors,
+      min_dist = umap_min_dist,
+      n_components = 2,
+      verbose = FALSE,
+      seed = seed
+    )
+    embed <- as.data.frame(embed_mat)
+    colnames(embed) <- c("Dim1", "Dim2")
+    xlab <- "UMAP1"
+    ylab <- "UMAP2"
+  }
+  
+  # ---- Clustering ----
+  if (method == "kmeans") {
+    if (is.null(k)) {
+      stop("Please provide 'k' (number of clusters) for k-means.")
+    }
+    model <- stats::kmeans(mat, centers = k)
+    cluster <- factor(model$cluster)
+    
+  } else if (method == "hclust") {
+    if (is.null(k)) {
+      stop("Please provide 'k' (number of clusters) for hierarchical clustering.")
+    }
+    hc <- stats::hclust(dist(mat), method = hclust_method)
+    cl_vec <- stats::cutree(hc, k = k)
+    model <- hc
+    cluster <- factor(cl_vec)
+    
+  } else if (method == "dbscan") {
+    if (is.null(eps)) {
+      stop("Please provide 'eps' for DBSCAN.")
+    }
+    model <- dbscan::dbscan(mat, eps = eps, minPts = minPts)
+    cluster <- factor(model$cluster)  # 0 = noise
+    
+  } else if (method == "hdbscan") {
+    model <- dbscan::hdbscan(mat, minPts = minPts)
+    cluster <- factor(model$cluster)  # 0 = noise
+    
+  } else if (method == "pam") {
+    if (is.null(k)) {
+      stop("Please provide 'k' (number of clusters) for PAM.")
+    }
+    model <- cluster::pam(mat, k = k)
+    cluster <- factor(model$clustering)
+  }
+  
+  # Add cluster to embedding
+  embed$cluster <- cluster
+  
+  # ---- Plot ----
+  p <- ggplot(embed, aes(x = Dim1, y = Dim2, color = cluster)) +
+    geom_point(alpha = 0.7, size = 2) +
+    labs(
+      title = paste0("Clustering with ", toupper(method), " (", dimred, ")"),
+      x = xlab,
+      y = ylab,
+      color = "Cluster"
+    ) +
+    theme_minimal()
+  
+  # ---- Return all useful objects ----
+  result <- list(
+    data      = dplyr::bind_cols(data_input, cluster = cluster),
+    model     = model,
+    embedding = embed,
+    plot      = p,
+    method    = method,
+    dimred    = dimred
+  )
+  
+  return(result)
+}
+```
+
+This is your **“one function to rule them all”** for standard clustering + visualization on numeric tables.
+
+## Example 1 – K-means + PCA on Penguins
+
+We know there are 3 species in the dataset, so let’s ask K-means for **3 clusters** and visualize using PCA.
+
+```{r kmeans-pca}
+res_kmeans_pca <- cluster_and_embed(
+  data   = penguins_features,
+  method = "kmeans",
+  dimred = "PCA",
+  k      = 3,
+  scale  = TRUE
+)
+
+res_kmeans_pca$plot
+```
+
+Compare the clusters to the actual species:
+
+```{r kmeans-vs-species}
+penguins_kmeans <- res_kmeans_pca$data %>%
+  mutate(species = penguins_clean$species)
+
+ggplot(penguins_kmeans, aes(x = species, fill = cluster)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "K-means clusters vs true species",
+    x = "Species",
+    y = "Count",
+    fill = "Cluster"
+  ) +
+  theme_minimal()
+```
+
+And a simple confusion table:
+
+```{r kmeans-confusion}
+table(penguins_kmeans$species, penguins_kmeans$cluster)
+```
+
+## Example 2 – HDBSCAN + UMAP
+
+Now we only change:
+
+* `method = "hdbscan"`
+* `dimred = "UMAP"`
+
+Everything else stays the same.
+
+```{r hdbscan-umap}
+res_hdbscan_umap <- cluster_and_embed(
+  data   = penguins_features,
+  method = "hdbscan",
+  dimred = "UMAP",
+  minPts = 5,
+  scale  = TRUE
+)
+
+res_hdbscan_umap$plot
+```
+
+Compare to species:
+
+```{r hdbscan-vs-species}
+penguins_hdbscan <- res_hdbscan_umap$data %>%
+  mutate(species = penguins_clean$species)
+
+ggplot(penguins_hdbscan, aes(x = species, fill = cluster)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "HDBSCAN clusters vs true species",
+    x = "Species",
+    y = "Count",
+    fill = "Cluster"
+  ) +
+  theme_minimal()
+```
+
+Note: **cluster `0` represents noise** (points not assigned to any cluster).
+
+## Example 3 – Hierarchical clustering (hclust) + UMAP
+
+Hierarchical clustering is often appreciated by biologists because it also gives a **dendrogram**. Here we just use it to assign clusters and visualize them in 2D.
+
+```{r hclust-umap}
+res_hclust_umap <- cluster_and_embed(
+  data   = penguins_features,
+  method = "hclust",
+  dimred = "UMAP",
+  k      = 3,          # cut the tree into 3 clusters
+  scale  = TRUE
+)
+
+res_hclust_umap$plot
+```
+
+And again, compare to species if needed:
+
+```{r hclust-vs-species}
+penguins_hclust <- res_hclust_umap$data %>%
+  mutate(species = penguins_clean$species)
+
+table(penguins_hclust$species, penguins_hclust$cluster)
+```
+
+## How to reuse this on your own data
+
+Imagine you have a feature table `features_df` where:
+
+* Each row = one object (cell, nucleus, sample, spot, …)
+* Each numeric column = one feature (intensity, morphology, expression, …)
+* Some columns may be metadata (sample ID, condition, patient, …)
+
+You can plug it directly into:
+
+```{r, eval=FALSE}
+res <- cluster_and_embed(
+  data   = features_df,
+  method = "dbscan",   # "kmeans", "hclust", "dbscan", "hdbscan", "pam"
+  dimred = "UMAP",     # or "PCA"
+  k      = 4,          # for kmeans / hclust / pam
+  eps    = 0.5,        # for DBSCAN
+  minPts = 10          # for DBSCAN / HDBSCAN
+)
+
+res$plot          # quick visual check
+res$data          # original data + cluster column
+res$model         # raw clustering model
+res$embedding     # 2D coordinates with cluster labels
+```
+
+All **non-numeric columns** are preserved as metadata in `res$data`, which makes it easy to analyze cluster composition:
+
+```{r, eval=FALSE}
+ggplot(res$data, aes(x = condition, fill = cluster)) +
+  geom_bar(position = "fill") +
+  labs(
+    title = "Cluster composition per condition",
+    y = "Proportion",
+    fill = "Cluster"
+  ) +
+  theme_minimal()
+```
+
+## Takeaways
+
+With a single function, you now have:
+
+* A **unified interface** for several clustering methods
+* Automatic, consistent **2D visualization** using PCA or UMAP
+* A clean object (`res`) bundling:
+
+  * original data + cluster labels
+  * model
+  * embedding
+  * plot
+  
+## Conclusion
+
+Wrapping multiple clustering methods and dimensionality reductions into a single R function makes exploratory analysis faster, simpler, and more consistent. Instead of rewriting the same code for each dataset or algorithm, you can quickly switch methods (K-means, HDBSCAN, DBSCAN, etc.) and focus on interpreting the clusters in their biological or experimental context. As always with unsupervised learning, this is a convenience tool, not a magic wand: the quality of the results still depends on your features, preprocessing, and domain knowledge.
