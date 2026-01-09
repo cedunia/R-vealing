@@ -6,6 +6,11 @@ author:
   - name: Cédric Hassen-Khodja
     url: {}
 date: 2025-12-05
+categories:
+  - [Machine Learning]
+  - [Unsupervised Learning]
+  - [Clustering]
+  - [Visualization]
 output:
   distill::distill_article:
     self_contained: false
