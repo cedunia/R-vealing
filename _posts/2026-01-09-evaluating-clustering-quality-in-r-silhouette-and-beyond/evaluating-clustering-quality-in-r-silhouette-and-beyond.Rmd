@@ -1,7 +1,7 @@
 ---
 title: "Evaluating Clustering Quality in R: Silhouette and Beyond"
 description: |
-  A short description of the post.
+  Learn how to assess clustering quality in R using internal validation metrics such as the silhouette and Calinski–Harabasz indices, and how to combine them with PCA/UMAP visual checks to make biologically meaningful choices on the Palmer Penguins dataset.
 author:
   - name: Cédric Hassen-Khodja
     url: {}
