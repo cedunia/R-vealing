@@ -6,18 +6,300 @@ author:
   - name: Cédric Hassen-Khodja
     url: {}
 date: 2026-01-09
+categories:
+  - [Machine Learning]
+  - [Unsupervised Learning]
+  - [Clustering]
+  - [Model Evaluation]
+  - [Validation Metrics]
 output:
   distill::distill_article:
     self_contained: false
 ---
 
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+required_packages <- c(
+  "palmerpenguins",
+  "dplyr",
+  "ggplot2",
+  "dbscan",
+  "uwot",
+  "fpc",
+  "cluster",
+  "clusterSim"
+)
+
+new_packages <- required_packages[!required_packages %in% installed.packages()[, "Package"]]
+if (length(new_packages) > 0) install.packages(new_packages)
+
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(dbscan)
+library(uwot)
+library(fpc)
+library(cluster)
+library(clusterSim)
+
 ```
 
-Distill is a publication format for scientific and technical writing, native to the web.
+When you run clustering on a new dataset, the next question is always:
 
-Learn more about using Distill at <https://rstudio.github.io/distill>.
+> *"Are these clusters any good ?"*
+
+Sometmes you're lucky and have **labels** (e.g., known cell types, species, conditions), and you compare predicted clusters to the ground truth. But in many real-life imaging or omics applications, you only have **unlabeled data**.
+
+In this post, we'll look at **practical ways to evaluate clustering quality in R when you don't have labels**, focusing on:
+
+* The **silhouette coefficient**
+* A couple of other **internal validation indices**
+* Simple **visual checks** you can reuse on your own data
+
+We'll again use the **Palmer Penguins** dataset so this post fits nicely with the previous "one function to rule them all" clustering article.
+
+## Why bother evaluating clusters?
+
+Clustering is inherently **exploratory**. It's very easy to:
+
+* Over-interpret **pretty PCA/UMAP plots**
+* Assume that "more clusters = more insight"
+* Or trust the default result of a single algorithm
+
+Evaluation metrics help you:
+
+* **Compare different algorithms** (K-means vs HDBSCAN vs hierarchical, ...)
+* **Choose the number of clusters** (for methods like K-means or PAM)
+* Detect when clustering is basically **noise + wishful thinking**
+
+They don't replace domain knowledge, but they give you a more objective starting point.
+
+## Data and clustering setup
+
+```{r data-prep}
+data("penguins", package = "palmerpenguins")
+
+penguins_clean <- penguins %>%
+  filter(
+    !is.na(bill_length_mm),
+    !is.na(bill_depth_mm),
+    !is.na(flipper_length_mm),
+    !is.na(body_mass_g)
+  )
+
+penguins_features <- penguins_clean %>%
+  dplyr::select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+head(penguins_features)
+```
+
+WE'll also create a small helper to **standardize** and get a distance matrix once, since several metrics use it:
+
+```{r helper}
+mat <- scale(as.matrix(penguins_features))
+dist_mat <- dist(mat)
+```
 
 
+## Silhouette coefficient: intuition and implementation
+
+The **silhouette coefficient** is probably the most popular internal metric. For each point:
+
+* It compares how close the point is to points in its **own cluster**
+* Versus how close it is to points in the **nearest other cluster**
+
+The value ranges from **-1 to 1**:
+
+* Close to **1** -> point is well-matched to its own cluster, far from others
+* Around **0** -> boundary point between clusters
+* Negative -> might be in the **wrong clusters**
+
+In R, you can compute it via `cluster::silhouette()`.
+
+### Example: K-means with different k
+
+```{r}
+set.seed(123)
+k_values <- 2:6
+
+sil_results <- lapply(k_values, function(k) {
+  km <- kmeans(mat, centers = k)
+  sil <- silhouette(km$cluster, dist_mat)
+  
+  data.frame(
+    k = k,
+    avg_silhouette = mean(sil[, "sil_width"])
+  )
+})
+
+sil_results <- bind_rows(sil_results)
+sil_results
+```
+
+You can also visualize how the average silhouette changes with `k`:
+
+```{r}
+ggplot(sil_results, aes(x = k, y = avg_silhouette)) +
+         geom_line() +
+         geom_point() +
+         labs(
+           title = "Average silhouette width for K-means",
+           x = "Number of clusters (k)",
+           y = "Average silhouette"
+           ) + theme_minimal()
+```
+
+Typical rule of thumb:
+
+* Prefer the **highest** average silhouette
+* But also check wether the chosen `k` makes **biological sense**
+
+On the Palmer Penguins dataset, the silhouette is maximal for k = 2, but we know there are 3 species. Because Adelie and Chinstrap partly overlap in morphometric space, the silhouette prefers to merge them into a single, well-separated cluster. In practice, k = 3 is therefore more biologically meaningful, even if its average silhouette is slightly lower.
+
+## Beyond silhouette: Calinski-Harabasz and Davies-Bouldin
+
+The silhouette is great, but it's only metric. The `fpc::cluster.stats()` function gives you several indices at once, including:
+
+* **Calinski-Harabasz (CH) index**
+  * Higher is better
+  * Favors compact, well-separated clusters
+
+* **Davies-Bouldin (DB) index**
+  * Lower is better
+  * Penalizes clusters that are not well separated
+  
+We can wrap everything into a small helper:
+
+```{r}
+evaluate_clustering <- function(dist_mat, clusters) {
+  cs <- fpc::cluster.stats(d = dist_mat, clustering = clusters)
+  
+  db <- clusterSim::index.DB(
+    x          = mat,       # numeric matrix/data.frame (not scaled if you prefer)
+    cl         = clusters,
+    centrotypes = "centroids"
+  )$DB
+  
+  data.frame(
+    n_clusters     = length(unique(clusters[clusters != 0])),
+    avg_silhouette = cs$avg.silwidth,
+    ch_index       = cs$ch,
+    db_index       = db
+  )
+}
+```
+
+> Note: For density-based methods (DBSCAN/HDBSCAN), cluster `0` is treated as **noise**, which is excluded from the cluster count.
+
+## Comparing algorithms on the same dataset
+
+Let's compare several clustering results on the **same penguin features**:
+
+* K-means (`k = 3`)
+* Hierarchical clustering (`k = 3`)
+* HDBSCAN (automatic number of clusters)
+
+```{r}
+set.seed(123)
+
+## 1) K-Means
+km3 <- kmeans(mat, centers = 3)
+eval_km3 <- evaluate_clustering(dist_mat, km3$cluster) %>%
+  mutate(method = "kmeans_k3")
+
+## 2) Hierarchical clustering
+hc <- hclust(dist_mat, method = "ward.D2")
+hc3_clusters <- cutree(hc, k = 3)
+eval_hc3 <- evaluate_clustering(dist_mat,  hc3_clusters) %>%
+  mutate(method = "hclust_k3")
+
+## 3) HDBSCAN
+hdb <- hdbscan(mat, minPts = 5)
+eval_hdb <- evaluate_clustering(dist_mat, hdb$cluster) %>%
+  mutate(method = "hdbscan")
+
+## Combine results
+evall_all <- bind_rows(eval_km3, eval_hc3, eval_hdb)
+evall_all
+```
+
+Interpretation:
+
+* **Higher silhouette / CH** and **lower DB** suggest better separation
+* HDBSCAN might find **fewer clusters plus noise**, so metrics are not directly comparable to strict partitionings (K-means, hclust)
+* Metrics are **guides**, not absolute truths
+
+In practice, we would keep the 3-cluster solution even though its average silhouette is slightly lower: it matches the known species structure and is easier to interpret biologically. This is a good example of why internal indices should be treated as **guides, not absolute truth** — different metrics encode different preferences, and they must be interpreted in the context of the data and the scientific question.
+
+
+## Visual sanity checks still matter
+
+Even with several indices, you should always look at the data:
+
+1. **2D embedding plots (PCA or UMAP)**
+2. **Cluster composition across conditions or species**
+3. **Distributions of key features by cluster**
+
+Example: UMAP colored by K-means clusters vs HDBSCAN clusters.
+
+```{r}
+set.seed(123)
+umap_coords <- umap(mat, n_neighbors = 15, min_dist = 0.1)
+
+umap_df <- as.data.frame(umap_coords)
+colnames(umap_df) <- c("UMAP1", "UMAP2")
+
+umap_df <- umap_df %>%
+  mutate(
+    km3_cluster = factor(km3$cluster),
+    hdb_cluster = factor(hdb$cluster),
+    species = penguins_clean$species
+  )
+
+#K-Means clusters
+ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = km3_cluster)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "UMAP embedding colored by K-Means (k = 3)",
+    color = "cluster"
+  ) +
+  theme_minimal()
+
+#HDBSCAN clusters
+ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = hdb_cluster)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "UMAP embedding colored by HDBSCAN clusters",
+    color = "species"
+  ) +
+  theme_minimal()
+```
+
+You can also quickly relate clusters to a **known label** (when available), just to see if the structure aligns with something biological:
+
+```{r}
+ggplot(umap_df, aes(x = UMAP1, y = UMAP2, color = species)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(
+    title = "UMAP embedding colored by true species",
+    color = "Species"
+  ) +
+  theme_minimal()
+```
+
+Even when you don't have labels, the same kind of plot is useful to check whether clusters:
+
+* Overlap strongly
+* Are dominated by a single dense blob
+* Or show clear, interpretable separation
+
+## Conclusion
+
+Internal validation metrics like **silhouette**, **Calinski-Harabasz**, and **Davies-Bouldin** indices give you a more objective way to compare clustering results, especially when you don't have ground truth lables. The help you pick reasonable parameters and avoid over-interpreting arbitrary partitions.
+
+However, they are **guides, not judges**. The best practice is to combine:
+
+* A few **quantitative metrics**,
+* Clear **visualizations** (PCA/UMAP, feature distributions),
+* And your **domain knowledge** about what patterns are biologically plausible.
